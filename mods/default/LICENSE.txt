@@ -1,0 +1,76 @@
+License of code
+---------------
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+License of original Minetest-c55 textures
+-----------------------------------------
+
+All textures not otherwise mentioned were taken or derived from Minetest-c55 0.3.1.
+
+Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+<https://creativecommons.org/licenses/by-sa/3.0/>
+
+
+
+License of media files
+----------------------
+
+Cisoun's texture pack (WTFPL):
+  chest_lock.png
+
+sfan5 (CC0):
+  firefly.obj
+  oerkki1.obj
+  rat.obj
+
+Originating from work by kddekadenz/Dogers (CC BY-SA 3.0):
+  default_grass_footstep.*.ogg
+  default_dig_crumbly.*.ogg
+
+celeron55 (CC BY-SA 3.0):
+  default_dig_choppy.ogg
+  default_dig_cracky.ogg
+  default_dig_dig_immediate.ogg
+  default_gravel_footstep.*.ogg
+  default_hard_footstep.*.ogg
+  default_place_node.*.ogg
+
+For default_break_glass.*.ogg (CC BY 3.0):
+  1: <https://www.freesound.org/people/cmusounddesign/sounds/71947/>
+  2: <https://www.freesound.org/people/Tomlija/sounds/97669/>
+  3: <https://www.freesound.org/people/lsprice/sounds/88808/>
+
+Mito551 (CC BY-SA):
+  default_dirt_footstep.*.ogg
+
+Added by sofar (CC BY 3.0)
+  default_tool_breaks.*.ogg <https://www.freesound.org/people/HerbertBoland/sounds/33206/>
+
+AGFX <https://www.freesound.org/people/AGFX/> (CC BY 3.0):
+  default_water_footstep.*.ogg
+
+Zabuhailo (CC0):
+  rat.*.ogg <https://freesound.org/s/143125/>
+
+steveygos93 (CC0 1.0):
+  explode.ogg <https://freesound.org/s/80401/>
+
+sophiehall3535 (CC0):
+  fireball.ogg <https://freesound.org/s/245933/>
+
+Worldmaxter (CC0):
+  leaves.*.ogg <https://freesound.org/s/471133/>

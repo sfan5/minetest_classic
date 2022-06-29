@@ -1,0 +1,19 @@
+# This file contains settings of Minetest Classic that can be changed in
+# minetest.conf
+
+#    If enabled, a bunch of items will be given to new players.
+give_initial_stuff (Give initial items) bool false
+
+#    If enabled, hostile mobs immediately despawn.
+only_peaceful_mobs (Only peaceful mobs) bool false
+
+#    The modernize flags control various behaviours in Minetest Classic that
+#    (when a flag is enabled) differ from how Minetest-c55 0.3 would have behaved.
+#    By default a conservative but reasonable compromise between faithfulness and
+#    modern engine features is enabled.
+#    Note that some differences in behaviour are unavoidable or miniscule, not
+#    everything is configurable.
+modernize (Modernize flags) flags node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds node_waving,glasslike,drowning,lava_non_renewable,allow_shadows,allow_minimap,new_item_entity,disable_oerkki_delete,fix_textures,sounds
+
+#    If enabled, players leave footprints when walking over grass.
+footprints (Footprints) bool false

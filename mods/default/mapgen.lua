@@ -1,0 +1,337 @@
+-- Original references:
+-- https://github.com/minetest/minetest/blob/stable-0.3/src/mapgen.cpp#L1667
+
+--
+-- General
+--
+
+if table.indexof({"v6", "singlenode"}, minetest.get_mapgen_setting("mg_name")) == -1 then
+	error("Minetest Classic only works with the v6 map generator")
+end
+
+local water_level = tonumber(minetest.get_mapgen_setting("water_level"))
+
+-- consider forcing mgv6_spflags = nosnowbiomes here
+
+for k, v in pairs({
+	mapgen_stone = "default:stone",
+	mapgen_water_source = "default:water_source",
+	mapgen_lava_source = "default:lava_source",
+	mapgen_cobble = "default:cobble",
+	mapgen_dirt = "default:dirt",
+	mapgen_dirt_with_grass = "default:dirt_with_grass",
+	mapgen_sand = "default:sand",
+	mapgen_tree = "default:tree",
+	mapgen_leaves = "default:leaves",
+	mapgen_apple = "default:apple",
+	mapgen_jungletree = "default:jungletree",
+	mapgen_jungleleaves = "default:jungleleaves",
+	mapgen_junglegrass = "default:junglegrass",
+	mapgen_cobble = "default:cobble",
+	mapgen_mossycobble = "default:mossycobble",
+}) do
+	minetest.register_alias(k, v)
+end
+
+--
+-- Decorations
+--
+
+local np_tree_amount = {
+	-- transformed from '0.04 * (x+0.39) / (1+0.39)'
+	offset = 0.01122,
+	scale = 0.02877,
+	spread = vector.new(125, 125, 125),
+	seed = 2,
+	octaves = 4,
+	persistence = 0.66,
+	lacunarity = 2,
+	-- Limitation: Can't model that jungles are supposed to have 5x as many trees
+	-- (combination with another noise in original code)
+}
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"default:dirt"},
+
+	-- Papyrus is part of the tree placing code in 0.3, which tries to place
+	-- a certain random amount of trees in a mapblock. This maps to the current
+	-- deco mechanism very well.
+	sidelen = 16,
+	noise_params = np_tree_amount,
+
+	y_min = water_level - 1,
+	y_max = water_level - 1,
+
+	decoration = "default:papyrus",
+	height = 2,
+	height_max = 3,
+
+	-- need this to replace water
+	flags = "force_placement",
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = {"default:sand"},
+
+	-- same as above
+	sidelen = 16,
+	noise_params = np_tree_amount,
+
+	y_min = water_level + 1,
+	y_max = 4,
+
+	decoration = "default:cactus",
+	height = 3,
+})
+
+-- TODO junglegrass can sit on top of cacti, consider emulating that
+
+--
+-- Custom stuff
+--
+
+local np_crumblyness = {
+	offset = 0,
+	scale = 1, -- = noise_scale
+	spread = vector.new(20, 20, 20), -- = pos_scale
+	seed = 34413,
+	octaves = 3,
+	persistence = 1.3,
+	lacunarity = 2, -- hardcoded in noise.cpp
+}
+
+local np_wetness = {
+	offset = 0,
+	scale = 1,
+	spread = vector.new(40, 40, 40),
+	seed = 32474,
+	octaves = 4,
+	persistence = 1.1,
+	lacunarity = 2,
+}
+
+local np_clay = {
+	offset = 0.5,
+	scale = 1,
+	spread = vector.new(500, 500, 500),
+	seed = 4321,
+	octaves = 6,
+	persistence = 0.95,
+	lacunarity = 2,
+	eased = false,
+}
+
+local function rand_pos(self)
+	local a, b = self.va.MinEdge, self.va.MaxEdge
+	return self.rand:next(a.x+1, b.x-1), self.rand:next(a.y+1, b.y-1), self.rand:next(a.z+1, b.z-1)
+end
+
+local function place_some(self, sparseness, x, y, z, content)
+	for idx in self.va:iter(x-1, y-1, z-1, x+1, y+1, z+1) do
+		if self.data[idx] == self.c_stone and self.rand:next() % sparseness == 0 then
+			self.data[idx] = content
+		end
+	end
+end
+
+local function perlin_3d_buf(self, np, buffer)
+	-- get map with same dimensions as vmanip area so indexes can be reused
+	local map = minetest.get_perlin_map(np, self.va:getExtent())
+	return map:get_3d_map_flat(self.va.MinEdge, buffer)
+end
+
+local cached_buf1 = {}
+local cached_buf2 = {}
+local cached_buf3 = {}
+local cached_buf4 = {}
+
+default.on_generated = function(minp, maxp, blockseed)
+	if minp.y >= 100 then
+		-- high in the air there's nothing, skip
+		return
+	end
+
+	local self = {
+		rand = PseudoRandom(blockseed),
+
+		--va = VoxelArea,
+		--vm = VoxelManip,
+		data = cached_buf1,
+
+		c_stone = minetest.get_content_id("default:stone")
+	}
+	do
+		local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
+		self.vm = vm
+		self.va = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
+		self.vm:get_data(self.data)
+	end
+
+	local x, y, z
+	local amount
+	local crumblyness = perlin_3d_buf(self, np_crumblyness, cached_buf2)
+	local wetness = perlin_3d_buf(self, np_wetness, cached_buf3)
+	local c_coal = minetest.get_content_id("default:coalstone")
+	local c_iron = minetest.get_content_id("default:ironstone")
+
+	-- Mese
+	-- assume ground level is at zero which simplifies this a lot
+	local approx_ground_depth = -(minp.y + maxp.y) / 2
+	local c_mese = minetest.get_content_id("default:mese")
+	for n = 1, approx_ground_depth/4 do
+		if self.rand:next() % 50 == 0 then
+			x, y, z = rand_pos(self)
+			place_some(self, 8, x, y, z, c_mese)
+		end
+	end
+
+	-- Minerals
+	amount = self.rand:next(0, 15)
+	amount = 20 * (amount*amount*amount) / 1000
+	for n = 1, amount do
+		x, y, z = rand_pos(self)
+		local mineral
+		local idx = self.va:index(x, y+5, z)
+		if crumblyness[idx] < -0.1 then
+			mineral = c_coal
+		elseif wetness[idx] > 0 then
+			mineral = c_iron
+		end
+		if mineral ~= nil then
+			place_some(self, 6, x, y, z, mineral)
+		end
+	end
+
+	-- More coal
+	local coal_amount = 30
+	if self.rand:next() % math.floor(60 / coal_amount) == 0 then
+		amount = self.rand:next(0, 15)
+		amount = coal_amount * (amount*amount*amount) / 1000
+		for n = 1, amount do
+			x, y, z = rand_pos(self)
+			place_some(self, 8, x, y, z, c_coal)
+		end
+	end
+
+	-- More iron
+	local iron_amount = 8
+	if self.rand:next() % math.floor(60 / iron_amount) == 0 then
+		amount = self.rand:next(0, 15)
+		amount = iron_amount * (amount*amount*amount) / 1000
+		for n = 1, amount do
+			x, y, z = rand_pos(self)
+			place_some(self, 8, x, y, z, c_iron)
+		end
+	end
+
+	-- Gravel
+	-- mgv6 takes care of sand and mud already and generates way
+	-- less than 0.3 would have but we don't have a say in that.
+	local c_gravel = minetest.get_content_id("default:gravel")
+	for x = minp.x, maxp.x do
+	for z = minp.z, maxp.z do
+		for idx in self.va:iter(x, minp.y, z, x, maxp.y, z) do
+			if self.data[idx] == self.c_stone then
+				if crumblyness[idx] <= 1.3 and crumblyness[idx] > 0.7 and wetness[idx] < -0.6 then
+					self.data[idx] = c_gravel
+				end
+			end
+		end
+	end
+	end
+
+	-- Dungeons are left up to the mapgen
+
+	if minp.y <= -3 then
+		local ncrandom = PseudoRandom(blockseed+9324342)
+		local c_nc = minetest.get_content_id("default:nyancat")
+		local c_nc_rb = minetest.get_content_id("default:nyancat_rainbow")
+		if ncrandom:next(0, 1000) == 0 then
+			local dir, facedir_i = vector.zero(), 0
+			local r = ncrandom:next(0, 3)
+			if r == 0 then
+				dir.x = 1
+				facedir_i = 3
+			elseif r == 1 then
+				dir.x = -1
+				facedir_i = 1
+			elseif r == 2 then
+				dir.z = 1
+				facedir_i = 2
+			else
+				dir.z = -1
+			end
+			local p = vector.offset(self.va.MinEdge, 16 + ncrandom:next(0, 15),
+				16 + ncrandom:next(0, 15), 16 + ncrandom:next(0, 15))
+			-- this sets param2 without needing to retrieve the entire buffer
+			self.vm:set_node_at(p, { name = "air", param2 = facedir_i })
+			self.data[self.va:indexp(p)] = c_nc
+			local length = ncrandom:next(3, 15)
+			for j = 1, length do
+				p = vector.subtract(p, dir)
+				self.data[self.va:indexp(p)] = c_nc_rb
+			end
+		end
+	end
+
+	-- Clay
+	-- The condition for clay is as follows:
+	-- (0, 1 or 2 nodes below water level) and (at the surface or one node deep)
+	-- and (where sand is) and (noise comparison suceeds)
+	local c_sand = minetest.get_content_id("default:sand")
+	local c_clay = minetest.get_content_id("default:clay")
+	local c_water = minetest.get_content_id("default:water_source")
+	if minp.y <= water_level-2 and water_level+1 <= maxp.y then
+		local claynoise = minetest.get_perlin_map(np_clay,
+			{x=maxp.x - minp.x + 1, y=maxp.z - minp.z + 1}):get_2d_map_flat(
+			{x=minp.x, y=minp.z}, cached_buf4)
+		local stride = maxp.x - minp.x + 1
+		--
+		local idx
+		local depth, val
+		for x = minp.x, maxp.x do
+		for z = minp.z, maxp.z do
+			depth = 0
+			-- y+1 to detect surface
+			for y = water_level + 1, water_level - 2, -1 do
+				idx = self.va:index(x, y, z)
+				if y <= water_level and depth <= 1 and self.data[idx] == c_sand then
+					val = claynoise[(z - minp.z) * stride + (x - minp.x) + 1]
+					if val > 0 and val < (depth == 1 and 0.12 or 0.04) then
+						self.data[idx] = c_clay
+					end
+				end
+				if depth > 0 and self.data[idx] ~= core.CONTENT_AIR and self.data[idx] ~= c_water then
+					depth = depth + 1
+				end
+			end
+		end
+		end
+	end
+
+	self.vm:set_data(self.data)
+	self.vm:write_to_map()
+end
+
+-- It's possible someone would want ores to be generated in
+-- a singlenode map, but the chance is very slim. So leave it alone.
+if minetest.get_mapgen_setting("mg_name") ~= "singlenode" then
+	minetest.register_on_generated(default.on_generated)
+end
+
+-- for mapgen debugging
+if false then
+	minetest.override_item("default:stone", { drawtype = "airlike" })
+	local hl = {"coalstone", "ironstone", "mese", "clay", "gravel", "nyancat", "nyancat_rainbow"}
+	for _, s in ipairs(hl) do
+		minetest.override_item("default:" .. s, {
+			paramtype = "light",
+			light_source = 8,
+		})
+	end
+	minetest.register_on_newplayer(function(player)
+		player:get_inventory():add_item("main", "default:pick_mese")
+	end)
+end

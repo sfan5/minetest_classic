@@ -1,0 +1,7 @@
+*~
+*.bak*
+*.orig
+*.rej
+
+.vscode
+*.code-workspace
