@@ -941,8 +941,10 @@ minetest.register_node("default:steelblock", {
 	sounds = default.node_sound.stone,
 })
 
+-- The original Nyan Cat texture cannot be included due to known trademark issues:
+-- https://web.archive.org/web/20200911031901/https://github.com/minetest/minetest_game/issues/1647
 minetest.register_node("default:nyancat", {
-	description = "Nyancat",
+	description = "PB&J Pup",
 	tiles = { "nc_side.png", "nc_side.png", "nc_side.png", "nc_side.png", "nc_back.png", "nc_front.png" },
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
@@ -951,7 +953,7 @@ minetest.register_node("default:nyancat", {
 })
 
 minetest.register_node("default:nyancat_rainbow", {
-	description = "Nyancat Rainbow",
+	description = "PB&J Pup Candies",
 	tiles = { "nc_rb.png" },
 	groups = { stone = 6 },
 	sounds = default.node_sound.stone,

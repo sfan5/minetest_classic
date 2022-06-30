@@ -74,3 +74,10 @@ sophiehall3535 (CC0):
 
 Worldmaxter (CC0):
   leaves.*.ogg <https://freesound.org/s/471133/>
+
+Vanessa Ezekowitz, Auke Kok, celeron55 (CC BY 4.0):
+  "PB&J Pup" concept
+  nc_back.png
+  nc_front.png
+  nc_side.png
+  nc_rb.png
