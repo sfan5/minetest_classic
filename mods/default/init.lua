@@ -2,17 +2,7 @@
 	Minetest Classic
 	Copyright (c) 2022 sfan5 <sfan5@live.de>
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published by
-	the Free Software Foundation; either version 2.1 of the License, or
-	(at your option) any later version.
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
-	You should have received a copy of the GNU Lesser General Public License along
-	with this program; if not, write to the Free Software Foundation, Inc.,
-	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+	SPDX-License-Identifier: LGPL-2.1-or-later
 --]]
 
 default = {}
@@ -35,15 +25,15 @@ default = {}
 -- ^ ^ ^ ^ ^ ^ ^ ^ ^
 
 -- TODO set is_ground_content sanely or exactly as in orginal?
--- TODO recheck light_propagates which is paramtype = "light" now
 
 -- TODOs:
 -- 'give_initial_stuff'
 -- come up with some sane item/armor groups to use
 -- dirt -> grass LBM
+--   ^ https://github.com/minetest/minetest/blob/stable-0.3/src/environment.cpp#L622
 -- generate failed dungeons in water (like an U)
 -- 'only_peaceful_mobs'
--- mapgen: take desert dungeons and turn into normal ones or fill them
+-- mapgen: take desert dungeons and place cobble so they work like normal ones
 -- do stone deserts appear naturally?
 -- mob damage using groups
 -- 'footprints'
@@ -74,6 +64,8 @@ default.modernize = {
 	allow_shadows = false,
 	-- Allows the minimap to be used
 	allow_minimap = false,
+	-- Allows the player to zoom
+	allow_zoom = false,
 	-- Keeps the (new) item entity from the engine instead of emulating the old one
 	new_item_entity = false,
 	-- Don't delete Oerkki if the player gets too close
@@ -82,10 +74,12 @@ default.modernize = {
 	fix_textures = false,
 	-- Enable sounds
 	sounds = false,
+	-- Add a wieldhand texture instead of having it invisible
+	wieldhand = false,
 
 	-- TODO pvp, disable_rightclick_drop, new_skybox, allow_drop, glasslike_framed
 }
-local modernize_default = "node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds"
+local modernize_default = "node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand"
 
 do
 	local warned = {}
@@ -190,7 +184,8 @@ end
 minetest.register_on_joinplayer(function(player)
 	player:set_properties({
 		pointable = false, -- this gets rid of pvp
-		nametag_bgcolor = "#000000",
+		nametag_bgcolor = "#00000000",
+		zoom_fov = default.modernize.allow_zoom and 15 or 0,
 	})
 	if not default.modernize.allow_minimap then
 		player:hud_set_flags({minimap = false})
@@ -392,7 +387,6 @@ default.node_sound.water = extend(default.node_sound.default, {
 })
 
 default.node_sound.other = {
-	-- maybe add footstep here?
 	dig = {name = "default_dig_dig_immediate", gain = 1.0},
 }
 
@@ -1186,6 +1180,12 @@ minetest.register_tool("default:sword_steel", {
 -- Items
 --
 
+if not default.modernize.wieldhand then
+	minetest.override_item("", {
+		wield_image = "blank.png",
+	})
+end
+
 minetest.register_craftitem("default:stick", {
 	description = "Stick",
 	inventory_image = "stick.png",
@@ -1294,7 +1294,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "default:sign",
+	output = "default:sign_wall",
 	recipe = {
 		{"default:wood", "default:wood", "default:wood"},
 		{"default:wood", "default:wood", "default:wood"},
@@ -1338,7 +1338,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "default:MesePick",
+	output = "default:mese_pick",
 	recipe = {
 		{"default:mese", "default:mese", "default:mese"},
 		{"", "default:stick", ""},
@@ -1430,9 +1430,9 @@ minetest.register_craft({
 minetest.register_craft({
 	output = "default:rail 15",
 	recipe = {
-		{"default:steel_ingot", "", "default:steel_ingot"},
 		{"default:steel_ingot", "default:stick", "default:steel_ingot"},
-		{"default:steel_ingot", "", "default:steel_ingot"},
+		{"default:steel_ingot", "default:stick", "default:steel_ingot"},
+		{"default:steel_ingot", "default:stick", "default:steel_ingot"},
 	}
 })
 
@@ -1544,16 +1544,16 @@ minetest.register_craft({
 --
 
 for item, time in pairs({
-	["default:tree"] = 30,
-	["default:jungletree"] = 30,
-	["default:fence_wood"] = 30/2,
-	["default:wood"] = 30/4,
-	["default:bookshelf"] = 30/4,
-	["default:leaves"] = 30/16,
-	["default:papyrus"] = 30/32,
-	["default:junglegrass"] = 30/32,
-	["default:cactus"] = 30/4,
-	["default:stick"] = 30/4/4,
+	["default:tree"]         = 30,
+	["default:jungletree"]   = 30,
+	["default:fence_wood"]   = 30/2,
+	["default:wood"]         = 30/4,
+	["default:bookshelf"]    = 30/4,
+	["default:leaves"]       = 30/16,
+	["default:papyrus"]      = 30/32,
+	["default:junglegrass"]  = 30/32,
+	["default:cactus"]       = 30/4,
+	["default:stick"]        = 30/4/4,
 	["default:lump_of_coal"] = 40,
 }) do
 	minetest.register_craft({
@@ -1564,13 +1564,13 @@ for item, time in pairs({
 end
 
 for item_in, item_out in pairs({
-	["default:tree"] = "default:lump_of_coal",
-	["default:cobble"] = "default:stone",
-	["default:sand"] = "default:glass",
+	["default:tree"]         = "default:lump_of_coal",
+	["default:cobble"]       = "default:stone",
+	["default:sand"]         = "default:glass",
 	["default:lump_of_iron"] = "default:steel_ingot",
 	["default:lump_of_clay"] = "default:clay_brick",
-	["default:rat"] = "default:cooked_rat",
-	["default:cooked_rat"] = "default:scorched_stuff",
+	["default:rat"]          = "default:cooked_rat",
+	["default:cooked_rat"]   = "default:scorched_stuff",
 }) do
 	minetest.register_craft({
 		type = "cooking",
