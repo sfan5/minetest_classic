@@ -18,7 +18,18 @@ local chunksize = tonumber(minetest.get_mapgen_setting("chunksize"))
 -- (0.3 generates one MapBlock at once, later versions use 1 MapChunk = 5*5*5 MapBlocks)
 local chunksize_c = math.pow(chunksize, 3)
 
--- consider forcing mgv6_spflags = nosnowbiomes here
+-- force snow biomes off if the world was created with them enabled
+do
+	local spflags = minetest.get_mapgen_setting("mgv6_spflags")
+	spflags = string.split(spflags, ",", false)
+	for i, v in ipairs(spflags) do
+		if v:find("snowbiomes") then
+			spflags[i] = "nosnowbiomes"
+		end
+	end
+	spflags = table.concat(spflags, ",")
+	minetest.set_mapgen_setting("mgv6_spflags", spflags, true)
+end
 
 for k, v in pairs({
 	mapgen_stone = "default:stone",
