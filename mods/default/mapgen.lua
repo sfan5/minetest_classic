@@ -9,7 +9,14 @@ if table.indexof({"v6", "singlenode"}, minetest.get_mapgen_setting("mg_name")) =
 	error("Minetest Classic only works with the v6 map generator")
 end
 
+assert(minetest.MAP_BLOCKSIZE == 16) -- calculations would need to be redone
+
 local water_level = tonumber(minetest.get_mapgen_setting("water_level"))
+
+local chunksize = tonumber(minetest.get_mapgen_setting("chunksize"))
+-- whole number multiplier used for mapgen processes to account for size difference
+-- (0.3 generates one MapBlock at once, later versions use 1 MapChunk = 5*5*5 MapBlocks)
+local chunksize_c = math.pow(chunksize, 3)
 
 -- consider forcing mgv6_spflags = nosnowbiomes here
 
@@ -123,8 +130,7 @@ local np_clay = {
 	eased = false,
 }
 
-local function rand_pos(self)
-	local a, b = self.va.MinEdge, self.va.MaxEdge
+local function rand_pos(self, a, b)
 	return self.rand:next(a.x+1, b.x-1), self.rand:next(a.y+1, b.y-1), self.rand:next(a.z+1, b.z-1)
 end
 
@@ -140,6 +146,37 @@ local function perlin_3d_buf(self, np, buffer)
 	-- get map with same dimensions as vmanip area so indexes can be reused
 	local map = minetest.get_perlin_map(np, self.va:getExtent())
 	return map:get_3d_map_flat(self.va.MinEdge, buffer)
+end
+
+local function make_nc(self, ncrandom, minp, maxp)
+	local c_nc = minetest.get_content_id("default:nyancat")
+	local c_nc_rb = minetest.get_content_id("default:nyancat_rainbow")
+	local dir, facedir_i = vector.zero(), 0
+	local r = ncrandom:next(0, 3)
+	if r == 0 then
+		dir.x = 1
+		facedir_i = 3
+	elseif r == 1 then
+		dir.x = -1
+		facedir_i = 1
+	elseif r == 2 then
+		dir.z = 1
+		facedir_i = 2
+	else
+		dir.z = -1
+	end
+	local ex = vector.subtract(maxp, minp)
+	local p = vector.offset(minp, ncrandom:next(0, ex.x-1),
+		ncrandom:next(0, ex.y-1), ncrandom:next(0, ex.z-1))
+
+	-- this sets param2 without needing to retrieve the entire buffer
+	self.vm:set_node_at(p, { name = "air", param2 = facedir_i })
+	self.data[self.va:indexp(p)] = c_nc
+	local length = ncrandom:next(3, 15)
+	for j = 1, length do
+		p = vector.subtract(p, dir)
+		self.data[self.va:indexp(p)] = c_nc_rb
+	end
 end
 
 local cached_buf1 = {}
@@ -177,21 +214,29 @@ default.on_generated = function(minp, maxp, blockseed)
 	local c_iron = minetest.get_content_id("default:ironstone")
 
 	-- Mese
-	-- assume ground level is at zero which simplifies this a lot
-	local approx_ground_depth = -(minp.y + maxp.y) / 2
 	local c_mese = minetest.get_content_id("default:mese")
-	for n = 1, approx_ground_depth/4 do
-		if self.rand:next() % 50 == 0 then
-			x, y, z = rand_pos(self)
-			place_some(self, 8, x, y, z, c_mese)
+	-- do this in slices to improve distribution accuracy
+	for ii = 0, chunksize - 1 do
+		local sminp = vector.offset(minp, 0, ii * 16, 0)
+		local smaxp = vector.new(maxp.x, sminp.y + 15, maxp.z)
+		-- assume ground level is at zero which simplifies this a lot
+		local approx_ground_depth = -(sminp.y + smaxp.y) / 2
+		amount = approx_ground_depth / 4
+		amount = amount * (chunksize * chunksize)
+		for n = 1, amount do
+			if self.rand:next() % 50 == 0 then
+				x, y, z = rand_pos(self, sminp, smaxp)
+				place_some(self, 8, x, y, z, c_mese)
+			end
 		end
 	end
 
 	-- Minerals
 	amount = self.rand:next(0, 15)
 	amount = 20 * (amount*amount*amount) / 1000
+	amount = amount * chunksize_c
 	for n = 1, amount do
-		x, y, z = rand_pos(self)
+		x, y, z = rand_pos(self, minp, maxp)
 		local mineral
 		local idx = self.va:index(x, y+5, z)
 		if crumblyness[idx] < -0.1 then
@@ -206,23 +251,27 @@ default.on_generated = function(minp, maxp, blockseed)
 
 	-- More coal
 	local coal_amount = 30
-	if self.rand:next() % math.floor(60 / coal_amount) == 0 then
-		amount = self.rand:next(0, 15)
-		amount = coal_amount * (amount*amount*amount) / 1000
-		for n = 1, amount do
-			x, y, z = rand_pos(self)
-			place_some(self, 8, x, y, z, c_coal)
+	for ii = 1, chunksize_c do
+		if self.rand:next() % math.floor(60 / coal_amount) == 0 then
+			amount = self.rand:next(0, 15)
+			amount = coal_amount * (amount*amount*amount) / 1000
+			for n = 1, amount do
+				x, y, z = rand_pos(self, minp, maxp)
+				place_some(self, 8, x, y, z, c_coal)
+			end
 		end
 	end
 
 	-- More iron
 	local iron_amount = 8
-	if self.rand:next() % math.floor(60 / iron_amount) == 0 then
-		amount = self.rand:next(0, 15)
-		amount = iron_amount * (amount*amount*amount) / 1000
-		for n = 1, amount do
-			x, y, z = rand_pos(self)
-			place_some(self, 8, x, y, z, c_iron)
+	for ii = 1, chunksize_c do
+		if self.rand:next() % math.floor(60 / iron_amount) == 0 then
+			amount = self.rand:next(0, 15)
+			amount = iron_amount * (amount*amount*amount) / 1000
+			for n = 1, amount do
+				x, y, z = rand_pos(self, minp, maxp)
+				place_some(self, 8, x, y, z, c_iron)
+			end
 		end
 	end
 
@@ -244,34 +293,17 @@ default.on_generated = function(minp, maxp, blockseed)
 
 	-- Dungeons are left up to the mapgen
 
-	if minp.y <= -3 then
-		local ncrandom = PseudoRandom(blockseed+9324342)
-		local c_nc = minetest.get_content_id("default:nyancat")
-		local c_nc_rb = minetest.get_content_id("default:nyancat_rainbow")
-		if ncrandom:next(0, 1000) == 0 then
-			local dir, facedir_i = vector.zero(), 0
-			local r = ncrandom:next(0, 3)
-			if r == 0 then
-				dir.x = 1
-				facedir_i = 3
-			elseif r == 1 then
-				dir.x = -1
-				facedir_i = 1
-			elseif r == 2 then
-				dir.z = 1
-				facedir_i = 2
-			else
-				dir.z = -1
-			end
-			local p = vector.offset(self.va.MinEdge, 16 + ncrandom:next(0, 15),
-				16 + ncrandom:next(0, 15), 16 + ncrandom:next(0, 15))
-			-- this sets param2 without needing to retrieve the entire buffer
-			self.vm:set_node_at(p, { name = "air", param2 = facedir_i })
-			self.data[self.va:indexp(p)] = c_nc
-			local length = ncrandom:next(3, 15)
-			for j = 1, length do
-				p = vector.subtract(p, dir)
-				self.data[self.va:indexp(p)] = c_nc_rb
+	-- Nyancats
+	local ncrandom = PseudoRandom(blockseed+9324342)
+	-- same slice method here so they don't inadvertently appear above ground
+	for ii = 0, chunksize - 1 do
+		local sminp = vector.offset(minp, 0, ii * 16, 0)
+		local smaxp = vector.new(maxp.x, sminp.y + 15, maxp.z)
+		if sminp.y <= -3 then
+			for ii = 1, (chunksize * chunksize) do
+				if ncrandom:next(0, 1000) == 0 then
+					make_nc(self, ncrandom, sminp, smaxp)
+				end
 			end
 		end
 	end

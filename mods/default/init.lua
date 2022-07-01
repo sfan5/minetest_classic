@@ -708,6 +708,8 @@ minetest.register_node("default:water_source", {
 	sounds = default.node_sound.water,
 })
 
+-- TODO consider darkening the texture, since the original lava is unlighted
+-- despite emitting light (so it looks much darker)
 
 minetest.register_node("default:lava_flowing", {
 	description = "Lava",

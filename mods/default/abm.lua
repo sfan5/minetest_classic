@@ -51,7 +51,7 @@ minetest.register_abm({
 		pos.z = pos.z + math.random(-2, 2)
 		node = minetest.get_node(pos)
 		local below = minetest.get_node(vector.offset(pos, 0, -1, 0))
-		if below.name == "default:grass" and node.name == "air" then
+		if below.name == "default:dirt_with_grass" and node.name == "air" then
 			minetest.add_entity(pos, "default:rat")
 		end
 	end,
@@ -69,7 +69,7 @@ minetest.register_abm({
 			return
 		end
 		local p1 = vector.offset(pos, 0, 1, 0)
-		if minetest.get_node_light(p1) <= 3 then
+		if (minetest.get_node_light(p1) or 0) <= 3 then
 			if minetest.get_node(p1).name == "air" and
 				minetest.get_node(vector.offset(p1, 0, 1, 0)).name == "air" then
 				local i = math.random(0, 5)
