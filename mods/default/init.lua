@@ -33,11 +33,12 @@ default = {}
 --   ^ https://github.com/minetest/minetest/blob/stable-0.3/src/environment.cpp#L622
 -- generate failed dungeons in water (like an U)
 -- 'only_peaceful_mobs'
--- mapgen: take desert dungeons and place cobble so they work like normal ones
 -- do stone deserts appear naturally?
 -- mob damage using groups
 -- 'footprints'
--- sound ideas: furnace
+-- sound ideas: furnace, eating
+-- falling sand/gravel
+-- investigate long vertical shafts (mgv6 fail?)
 
 -- long-term TODOs?:
 -- consider adding unfinished features like firefly spawn & standing signs

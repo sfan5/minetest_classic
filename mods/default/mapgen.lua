@@ -18,6 +18,14 @@ local chunksize = tonumber(minetest.get_mapgen_setting("chunksize"))
 -- (0.3 generates one MapBlock at once, later versions use 1 MapChunk = 5*5*5 MapBlocks)
 local chunksize_c = math.pow(chunksize, 3)
 
+local FIVE_DIRS = {
+	vector.new(-1, 0,  0),
+	vector.new( 1, 0,  0),
+	vector.new( 0, 0, -1),
+	vector.new( 0, 0,  1),
+	vector.new( 0, 1,  0),
+}
+
 -- force snow biomes off if the world was created with them enabled
 do
 	local spflags = minetest.get_mapgen_setting("mgv6_spflags")
@@ -159,6 +167,53 @@ local function perlin_3d_buf(self, np, buffer)
 	return map:get_3d_map_flat(self.va.MinEdge, buffer)
 end
 
+local function fix_temple(self, cpos, wetness)
+	-- Mapgenv6 has generated a desert temple room, great!
+	-- Except we don't like that, desert temples weren't in 0.3.
+	-- The best we can do here is make an attempt at changing them to at least
+	-- resemble normal dungeons, which is what we'll do here.
+
+	-- try to determine room dimensions, walls are stone:
+	local d = {}
+	for i, dir in ipairs(FIVE_DIRS) do
+		local tmp = {}
+		for off = -1, 1 do
+			local start = vector.offset(cpos,
+				i > 2 and off or 0, 0, i <= 2 and off or 0)
+			table.insert(tmp, 1, 0)
+			for j = 1, (i == 5 and 21 or 9) do
+				local check = vector.add(start, vector.multiply(dir, j))
+				if self.data[self.va:indexp(check)] == self.c_stone then
+					break
+				end
+				tmp[1] = j
+			end
+		end
+		table.sort(tmp)
+		d[i] = tmp[2] -- median of three samples
+	end
+
+	-- (debug)
+	--[[self.data[self.va:indexp(cpos)] = minetest.get_content_id("default:torch")
+	for i, off in ipairs(d) do
+		local tmp = vector.add(cpos, vector.multiply(FIVE_DIRS[i], off))
+		self.data[self.va:indexp(tmp)] = minetest.get_content_id("default:sign_wall")
+		minetest.get_meta(tmp):set_string("infotext", tostring(i))
+	end--]]
+
+	-- now turn all stone to cobble
+	local rmin = vector.new(cpos.x - d[1] - 1, cpos.y        - 1, cpos.z - d[3] - 1)
+	local rmax = vector.new(cpos.x + d[2] + 1, cpos.y + d[5] + 1, cpos.z + d[4] + 1)
+	local c_cobble = minetest.get_content_id("default:cobble")
+	local c_mossycobble = minetest.get_content_id("default:mossycobble")
+	for idx in self.va:iterp(rmin, rmax) do
+		if self.data[idx] == self.c_stone then
+			local v = self.rand:next(0, 40) / 10 - 2
+			self.data[idx] = (v < wetness[idx]/3) and c_mossycobble or c_cobble
+		end
+	end
+end
+
 local function make_nc(self, ncrandom, minp, maxp)
 	local c_nc = minetest.get_content_id("default:nyancat")
 	local c_nc_rb = minetest.get_content_id("default:nyancat_rainbow")
@@ -223,6 +278,14 @@ default.on_generated = function(minp, maxp, blockseed)
 	local wetness = perlin_3d_buf(self, np_wetness, cached_buf3)
 	local c_coal = minetest.get_content_id("default:coalstone")
 	local c_iron = minetest.get_content_id("default:ironstone")
+
+	-- Before we do anything else: fix desert temples
+	local gennotify = minetest.get_mapgen_object("gennotify")
+	if gennotify.temple then
+		for _, pos in ipairs(gennotify.temple) do
+			fix_temple(self, pos, wetness)
+		end
+	end
 
 	-- Mese
 	local c_mese = minetest.get_content_id("default:mese")
@@ -302,7 +365,7 @@ default.on_generated = function(minp, maxp, blockseed)
 	end
 	end
 
-	-- Dungeons are left up to the mapgen
+	-- Generating dungeons are left up to the mapgen
 
 	-- Nyancats
 	local ncrandom = PseudoRandom(blockseed+9324342)
@@ -362,6 +425,7 @@ end
 -- a singlenode map, but the chance is very slim. So leave it alone.
 if minetest.get_mapgen_setting("mg_name") ~= "singlenode" then
 	minetest.register_on_generated(default.on_generated)
+	minetest.set_gen_notify({temple = true})
 end
 
 -- for mapgen debugging
