@@ -76,8 +76,10 @@ default.modernize = {
 	sounds = false,
 	-- Add a wieldhand texture instead of having it invisible
 	wieldhand = false,
+	-- Allows PvP
+	pvp = false,
 
-	-- TODO pvp, disable_rightclick_drop, new_skybox, allow_drop, glasslike_framed
+	-- TODO disable_rightclick_drop, new_skybox, allow_drop, glasslike_framed
 }
 local modernize_default = "node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand"
 
@@ -183,12 +185,15 @@ end
 
 minetest.register_on_joinplayer(function(player)
 	player:set_properties({
-		pointable = false, -- this gets rid of pvp
+		pointable = default.modernize.pvp,
 		nametag_bgcolor = "#00000000",
 		zoom_fov = default.modernize.allow_zoom and 15 or 0,
 	})
 	if not default.modernize.allow_minimap then
 		player:hud_set_flags({minimap = false})
+	end
+	if default.modernize.pvp then
+		player:set_armor_groups({fleshy = 75})
 	end
 	player:set_physics_override({sneak_glitch = true})
 	if player.set_lighting and default.modernize.allow_shadows then
