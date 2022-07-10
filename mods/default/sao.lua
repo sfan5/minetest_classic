@@ -207,17 +207,9 @@ local Oerkki1SAO = {
 	is_hidden = false,
 }
 
-local Oerkki1SAO_tool_damage = {
-	["default:sword_wood"] = 10,
-	["default:sword_stone"] = 12,
-	["default:sword_steel"] = 16,
-	["default:axe_stone"] = 7,
-	["default:axe_steel"] = 9,
-	["default:pick_steel"] = 7,
-}
-
 function Oerkki1SAO:on_activate(staticdata, dtime_s)
 	self.object:set_acceleration(vector.new(0, -gravity, 0))
+	self.object:set_armor_groups({brittle=100})
 end
 
 function Oerkki1SAO:on_step(dtime, moveresult)
@@ -352,23 +344,14 @@ function Oerkki1SAO:on_step(dtime, moveresult)
 end
 
 function Oerkki1SAO:on_punch(hitter, time_from_last_punch)
-	-- cf. src/game.cpp object_hit_delay
 	if (time_from_last_punch or 0) <= 0.5 then
-		return
+		return true
 	end
 
 	local dir = vector.subtract(self.object:get_pos(), hitter:get_pos())
 	dir = vector.normalize(dir)
 	self.object:set_velocity(vector.add(self.object:get_velocity(),
 		vector.multiply(dir, 12)))
-
-	local stack = hitter:get_wielded_item()
-	local amount = Oerkki1SAO_tool_damage[stack:get_name()] or 5
-	self.object:set_hp(self.object:get_hp() - amount)
-	stack:add_wear(655)
-	hitter:set_wielded_item(stack)
-
-	return true
 end
 
 minetest.register_entity("default:oerkki1", Oerkki1SAO)
@@ -521,15 +504,6 @@ local MobV2SAO_dps = {
 	{x=1,y=1,z=0}
 }
 
-local MobV2SAO_tool_damage = {
-	["default:sword_wood"] = 4,
-	["default:sword_stone"] = 6,
-	["default:sword_steel"] = 8,
-	["default:axe_stone"] = 3,
-	["default:axe_steel"] = 4,
-	["default:pick_steel"] = 3,
-}
-
 default.spawn_mobv2 = function(pos, props)
 	local staticdata = minetest.write_json(props, false)
 	return minetest.add_entity(pos, "default:mobv2", staticdata)
@@ -639,8 +613,9 @@ function MobV2SAO:on_activate(staticdata, dtime_s)
 		self.object:set_hp(self.props.hp)
 		self.props.hp = nil
 	end
-
 	self:setLooks(self.props.looks)
+
+	self.object:set_armor_groups({fleshy=100})
 end
 
 function MobV2SAO:get_staticdata()
@@ -888,9 +863,8 @@ function MobV2SAO:on_step(dtime, moveresult)
 end
 
 function MobV2SAO:on_punch(hitter, time_from_last_punch)
-	-- cf. src/game.cpp object_hit_delay
 	if (time_from_last_punch or 0) <= 0.5 then
-		return
+		return true
 	end
 
 	self.disturb_timer = 0
@@ -914,13 +888,6 @@ function MobV2SAO:on_punch(hitter, time_from_last_punch)
 			self:setPos(new_pos)
 		end
 	end
-
-	local stack = hitter:get_wielded_item()
-	local amount = MobV2SAO_tool_damage[stack:get_name()] or 2
-	self.object:set_hp(self.object:get_hp() - amount)
-	stack:add_wear(655)
-	hitter:set_wielded_item(stack)
-	return true
 end
 
 --function MobV2SAO:on_rightclick()

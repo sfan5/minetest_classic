@@ -28,13 +28,12 @@ default = {}
 
 -- TODOs:
 -- 'give_initial_stuff'
--- come up with some sane item/armor groups to use
+-- come up with some sane item groups to use
 -- dirt -> grass LBM
 --   ^ https://github.com/minetest/minetest/blob/stable-0.3/src/environment.cpp#L622
 -- generate failed dungeons in water (like an U)
 -- 'only_peaceful_mobs'
 -- do stone deserts appear naturally?
--- mob damage using groups
 -- 'footprints'
 -- sound ideas: furnace, eating
 -- falling sand/gravel
@@ -1004,14 +1003,16 @@ end
 
 minetest.override_item("", {
 	tool_capabilities = {
-		full_punch_interval = 1.0, -- irrelevant unless we use dmg groups
+		-- this is the object_hit_delay in 0.3, SAO code addtl. caps this to
+		-- either do full damage or none at all
+		full_punch_interval = 0.5,
 		groupcaps = {
 			dig_hand = { times = { 0.5, 0 }, uses = 0 },
 			dirt = { times = levels(default.dirt_levels, 0.75), uses = 0 },
 			stone = { times = levels(default.stone_levels, 15), uses = 0 },
 			wood = { times = levels(default.wood_levels, 3), uses = 0 },
 		},
-		damage_groups = { },
+		damage_groups = { brittle = 5, fleshy = 2 },
 	}
 })
 
@@ -1019,11 +1020,9 @@ minetest.register_tool("default:pick_wood", {
 	description = "Wooden Pickaxe",
 	inventory_image = "tool_woodpick.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			stone = { times = levels(default.stone_levels, 1.3), uses = 30 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1032,11 +1031,9 @@ minetest.register_tool("default:pick_stone", {
 	description = "Stone Pickaxe",
 	inventory_image = "tool_stonepick.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			stone = { times = levels(default.stone_levels, 0.75), uses = 100 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1045,11 +1042,12 @@ minetest.register_tool("default:pick_steel", {
 	description = "Steel Pickaxe",
 	inventory_image = "tool_steelpick.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
+		full_punch_interval = 0.5,
 		groupcaps = {
 			stone = { times = levels(default.stone_levels, 0.50), uses = 333 },
 		},
-		damage_groups = { },
+		damage_groups = { brittle = 7, fleshy = 3 },
+		punch_attack_uses = 100,
 	},
 	sound = default.tool_sound,
 })
@@ -1058,14 +1056,12 @@ minetest.register_tool("default:pick_mese", {
 	description = "Mese Pickaxe",
 	inventory_image = "tool_mesepick.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0), uses = 1337 },
 			stone = { times = levels(default.stone_levels, 0), uses = 1337 },
 			wood = { times = levels(default.wood_levels, 0), uses = 1337 },
 			dig_mese = { times = { 0 }, uses = 1337 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1074,11 +1070,9 @@ minetest.register_tool("default:shovel_wood", {
 	description = "Wooden Shovel",
 	inventory_image = "tool_woodshovel.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0.4), uses = 50 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1087,11 +1081,9 @@ minetest.register_tool("default:shovel_stone", {
 	description = "Stone Shovel",
 	inventory_image = "tool_stoneshovel.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0.2), uses = 150 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1100,11 +1092,9 @@ minetest.register_tool("default:shovel_steel", {
 	description = "Steel Shovel",
 	inventory_image = "tool_steelshovel.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0.15), uses = 400 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1113,11 +1103,9 @@ minetest.register_tool("default:axe_wood", {
 	description = "Wooden Axe",
 	inventory_image = "tool_woodaxe.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
 		groupcaps = {
 			wood = { times = levels(default.wood_levels, 1.5), uses = 30 },
 		},
-		damage_groups = { },
 	},
 	sound = default.tool_sound,
 })
@@ -1126,11 +1114,12 @@ minetest.register_tool("default:axe_stone", {
 	description = "Stone Axe",
 	inventory_image = "tool_stoneaxe.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
+		full_punch_interval = 0.5,
 		groupcaps = {
 			wood = { times = levels(default.wood_levels, 0.75), uses = 100 },
 		},
-		damage_groups = { },
+		damage_groups = { brittle = 7, fleshy = 3 },
+		punch_attack_uses = 100,
 	},
 	sound = default.tool_sound,
 })
@@ -1139,11 +1128,12 @@ minetest.register_tool("default:axe_steel", {
 	description = "Steel Axe",
 	inventory_image = "tool_steelaxe.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
+		full_punch_interval = 0.5,
 		groupcaps = {
 			wood = { times = levels(default.wood_levels, 0.5), uses = 333 },
 		},
-		damage_groups = { },
+		damage_groups = { brittle = 9, fleshy = 4 },
+		punch_attack_uses = 100,
 	},
 	sound = default.tool_sound,
 })
@@ -1152,9 +1142,9 @@ minetest.register_tool("default:sword_wood", {
 	description = "Wooden Sword",
 	inventory_image = "tool_woodsword.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
-		groupcaps = { },
-		damage_groups = { },
+		full_punch_interval = 0.5,
+		damage_groups = { brittle = 10, fleshy = 4 },
+		punch_attack_uses = 100,
 	},
 	sound = default.tool_sound,
 })
@@ -1163,9 +1153,9 @@ minetest.register_tool("default:sword_stone", {
 	description = "Stone Sword",
 	inventory_image = "tool_stonesword.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
-		groupcaps = { },
-		damage_groups = { },
+		full_punch_interval = 0.5,
+		damage_groups = { brittle = 12, fleshy = 6 },
+		punch_attack_uses = 100,
 	},
 	sound = default.tool_sound,
 })
@@ -1174,9 +1164,9 @@ minetest.register_tool("default:sword_steel", {
 	description = "Steel Sword",
 	inventory_image = "tool_steelsword.png",
 	tool_capabilities = {
-		full_punch_interval = 1.0,
-		groupcaps = { },
-		damage_groups = { },
+		full_punch_interval = 0.5,
+		damage_groups = { brittle = 16, fleshy = 8 },
+		punch_attack_uses = 100,
 	},
 	sound = default.tool_sound,
 })
