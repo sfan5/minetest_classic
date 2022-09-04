@@ -370,7 +370,7 @@ local FireflySAO = {
 		mesh = "firefly.obj",
 		textures = {"firefly.png"},
 		backface_culling = false,
-		glow = 127,
+		glow = minetest.LIGHT_MAX,
 	},
 
 	is_active = false,
@@ -583,7 +583,7 @@ function MobV2SAO:setLooks(looks)
 		toset.spritediv = {x=1, y=simple_anim_frames}
 	end
 	if lock_full_brightness then
-		toset.glow = 127
+		toset.glow = minetest.LIGHT_MAX
 	end
 
 	self.object:set_properties(toset)
@@ -672,7 +672,7 @@ function MobV2SAO:stepVisuals(dtime, pos)
 
 	if self.shooting ~= self.bright_shooting then
 		self.object:set_properties({
-			glow = self.shooting and 127 or 0,
+			glow = self.shooting and minetest.LIGHT_MAX or 0,
 		})
 		self.bright_shooting = self.shooting
 	end
