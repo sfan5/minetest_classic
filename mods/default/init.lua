@@ -30,7 +30,6 @@ default = {}
 -- TODOs:
 -- come up with some sane item groups to use
 -- generate failed dungeons in water (like an U)
--- 'only_peaceful_mobs'
 -- do stone deserts appear naturally?
 -- 'footprints'
 -- sound ideas: furnace, eating

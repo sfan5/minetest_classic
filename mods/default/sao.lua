@@ -59,6 +59,7 @@ local function explodeSquare(p0, size)
 			pos = p0,
 		}, true)
 	end
+	-- FIXME: callbacks / indestructability?
 	local positions = {}
 	for dx = 0, size.x - 1 do
 	for dy = 0, size.y - 1 do
@@ -208,6 +209,11 @@ local Oerkki1SAO = {
 }
 
 function Oerkki1SAO:on_activate(staticdata, dtime_s)
+	if core.settings:get("only_peaceful_mobs") then
+		self.object:remove()
+		return
+	end
+
 	self.object:set_acceleration(vector.new(0, -gravity, 0))
 	self.object:set_armor_groups({brittle=100})
 end
@@ -446,8 +452,9 @@ end
 
 minetest.register_entity("default:firefly", FireflySAO)
 
+--
 -- MobV2SAO
-
+--
 
 local MobV2SAO = {
 	initial_properties = {
@@ -602,6 +609,10 @@ function MobV2SAO:on_activate(staticdata, dtime_s)
 	assert(type(my_props) == "table")
 	for k, v in pairs(my_props) do
 		self.props[k] = v
+	end
+	if core.settings:get("only_peaceful_mobs") and not self.props.is_peaceful then
+		self.object:remove()
+		return
 	end
 
 	-- Only read on init, since the engine takes care of saving these normally
