@@ -1,5 +1,7 @@
 -- MaterialItems are equivalent to nodes and converted by the engine already
--- (although the minerals turn into ignore, welp)
+-- these two just don't match our internal naming:
+minetest.register_alias("default:stone_with_coal", "default:coalstone")
+minetest.register_alias("default:iron", "default:ironstone")
 
 -- CraftItems and ToolItems are just read with their name as-is, so we need aliases for them
 minetest.register_alias("Stick", "default:stick")
