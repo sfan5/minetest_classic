@@ -28,7 +28,6 @@ default = {}
 -- TODO set is_ground_content sanely or exactly as in orginal?
 
 -- TODOs:
--- 'give_initial_stuff'
 -- come up with some sane item groups to use
 -- generate failed dungeons in water (like an U)
 -- 'only_peaceful_mobs'
@@ -226,6 +225,26 @@ minetest.register_lbm({
 		end
 	end,
 })
+
+minetest.register_on_newplayer(function(player)
+	if not core.settings:get_bool("give_initial_stuff") then
+		return
+	end
+	if minetest.is_creative_enabled(player:get_player_name()) then
+		return
+	end
+	local inv = player:get_inventory()
+	local items = {
+		"default:pick_steel",
+		"default:torch 99",
+		"default:axe_steel",
+		"default:shovel_steel",
+		"default:cobble 99",
+	}
+	for _, item in ipairs(items) do
+		inv:add_item("main", item)
+	end
+end)
 
 --
 -- Skybox
