@@ -15,6 +15,7 @@ default = {}
 -- meta/formspec https://github.com/minetest/minetest/blob/stable-0.3/src/content_nodemeta.cpp
 -- selection boxes https://github.com/minetest/minetest/blob/stable-0.3/src/game.cpp#L348
 -- interact handlers https://github.com/minetest/minetest/blob/stable-0.3/src/server.cpp#L2238
+-- LBM https://github.com/minetest/minetest/blob/stable-0.3/src/environment.cpp#L622
 
 -- Node compatibility list that still exists in the engine today:
 -- https://github.com/minetest/minetest/blob/stable-5/src/content_mapnode.cpp#L123
@@ -29,8 +30,6 @@ default = {}
 -- TODOs:
 -- 'give_initial_stuff'
 -- come up with some sane item groups to use
--- dirt -> grass LBM
---   ^ https://github.com/minetest/minetest/blob/stable-0.3/src/environment.cpp#L622
 -- generate failed dungeons in water (like an U)
 -- 'only_peaceful_mobs'
 -- do stone deserts appear naturally?
@@ -200,6 +199,33 @@ minetest.register_on_joinplayer(function(player)
 		player:set_lighting({shadows = { intensity = 0.33 }})
 	end
 end)
+
+-- TODO: once supported by the engine this should be migrated to a bulk LBM
+minetest.register_lbm({
+	label = "Convert to grass",
+	name = "default:convert_to_grass",
+	nodenames = {"default:dirt"},
+	run_at_every_load = true,
+	action = function(pos, node, dtime_s)
+		if dtime_s == nil then
+			return -- (since 5.7.0)
+		end
+		-- This originally operated on blocks so the above node for the topmost node
+		-- would not be available, meaning the conversion could never happen for it
+		if pos.y % 16 == 15 then
+			return
+		end
+		if dtime_s > 300 then
+			local p1 = vector.offset(pos, 0, 1, 0)
+			local above = minetest.get_node(p1)
+			local has_air = above.name == "air" or minetest.get_item_group(above.name, "air_equivalent") > 0
+			if has_air and minetest.get_node_light(p1, 0.5) >= 13 then
+				node.name = "default:dirt_with_grass"
+				minetest.swap_node(pos, node)
+			end
+		end
+	end,
+})
 
 --
 -- Skybox
