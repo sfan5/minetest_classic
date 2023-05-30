@@ -1382,7 +1382,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "default:mese_pick",
+	output = "default:pick_mese",
 	recipe = {
 		{"default:mese", "default:mese", "default:mese"},
 		{"", "default:stick", ""},
@@ -1490,7 +1490,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "default:locked_chest",
+	output = "default:chest_locked",
 	recipe = {
 		{"default:wood", "default:wood", "default:wood"},
 		{"default:wood", "default:steel_ingot", "default:wood"},
@@ -1575,7 +1575,7 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "default:iron_apple",
+	output = "default:apple_iron",
 	recipe = {
 		{"", "default:steel_ingot", ""},
 		{"default:steel_ingot", "default:apple", "default:steel_ingot"},
