@@ -1329,11 +1329,10 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = "default:fence 2",
+	output = "default:fence_wood 2",
 	recipe = {
-		{"", "", ""},
-		{"default:wood", "default:wood", "default:wood"},
-		{"default:wood", "default:wood", "default:wood"},
+		{"default:stick", "default:stick", "default:stick"},
+		{"default:stick", "default:stick", "default:stick"},
 	}
 })
 
