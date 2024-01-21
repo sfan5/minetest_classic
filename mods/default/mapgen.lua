@@ -26,13 +26,20 @@ local FIVE_DIRS = {
 	vector.new( 0, 1,  0),
 }
 
--- force snow biomes off if the world was created with them enabled
+local temple_workaround_needed = true
+
 do
 	local spflags = minetest.get_mapgen_setting("mgv6_spflags")
 	spflags = string.split(spflags, ",", false)
 	for i, v in ipairs(spflags) do
+		-- force snow biomes off
 		if v:find("snowbiomes") then
 			spflags[i] = "nosnowbiomes"
+		end
+		-- disable temples too, if the engine supports it (5.9.0)
+		if v:find("temples") then
+			spflags[i] = "notemples"
+			temple_workaround_needed = false
 		end
 	end
 	spflags = table.concat(spflags, ",")
@@ -58,6 +65,8 @@ for k, v in pairs({
 }) do
 	minetest.register_alias(k, v)
 end
+
+minetest.log("info", "Desert temple workaround enabled: " .. dump(temple_workaround_needed))
 
 --
 -- Decorations
@@ -162,7 +171,7 @@ local function place_some(self, sparseness, x, y, z, content)
 end
 
 local function perlin_3d_buf(self, np, buffer)
-	-- get map with same dimensions as vmanip area so indexes can be reused
+	-- get map with same dimensions as vmanip area so indices can be reused
 	local map = minetest.get_perlin_map(np, self.va:getExtent())
 	return map:get_3d_map_flat(self.va.MinEdge, buffer)
 end
@@ -259,8 +268,8 @@ default.on_generated = function(minp, maxp, blockseed)
 	local self = {
 		rand = PseudoRandom(blockseed),
 
-		--va = VoxelArea,
-		--vm = VoxelManip,
+		--va = <VoxelArea>,
+		--vm = <VoxelManip>,
 		data = cached_buf1,
 
 		c_stone = minetest.get_content_id("default:stone")
@@ -280,9 +289,9 @@ default.on_generated = function(minp, maxp, blockseed)
 	local c_iron = minetest.get_content_id("default:ironstone")
 
 	-- Before we do anything else: fix desert temples
-	local gennotify = minetest.get_mapgen_object("gennotify")
-	if gennotify.temple then
-		for _, pos in ipairs(gennotify.temple) do
+	if temple_workaround_needed then
+		local gennotify = minetest.get_mapgen_object("gennotify")
+		for _, pos in ipairs(gennotify.temple or {}) do
 			fix_temple(self, pos, wetness)
 		end
 	end
@@ -365,7 +374,7 @@ default.on_generated = function(minp, maxp, blockseed)
 	end
 	end
 
-	-- Generating dungeons are left up to the mapgen
+	-- Generating dungeons is left up to the mapgen
 
 	-- Nyancats
 	local ncrandom = PseudoRandom(blockseed+9324342)
