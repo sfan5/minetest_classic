@@ -75,8 +75,10 @@ default.modernize = {
 	wieldhand = false,
 	-- Allows PvP
 	pvp = false,
+	-- Use engine's dynamic skybox with sun and moon
+	new_skybox = false,
 
-	-- TODO disable_rightclick_drop, new_skybox, allow_drop, glasslike_framed
+	-- TODO disable_rightclick_drop, allow_drop, glasslike_framed
 }
 local modernize_default = "node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand"
 
@@ -245,6 +247,12 @@ local function time_to_daynight_ratio(tod)
 	end
 end
 
+local skybox3_color = {
+	[""] = "#aac8e6",
+	["_dawn"] = "#263c58",
+	["_night"] = "#0a0f16",
+}
+
 default.set_skybox = function(player, brightness)
 	local t = "_night"
 	if brightness >= 0.5 then
@@ -253,18 +261,37 @@ default.set_skybox = function(player, brightness)
 		t = "_dawn"
 	end
 	local c = math.floor(brightness * 255)
-	player:set_sky({
-		type = "skybox",
-		base_color = string.format("#%02x%02x%02x", c, c, c), -- fog
-		textures = {
+	local fog_color = string.format("#%02x%02x%02x", c, c, c)
+	local params = {
+		fog = {
+			fog_start = 0.4,
+		},
+	}
+	if default.modernize.new_skybox then
+		params.type = "regular"
+		-- FIXME can't set the fog_color (engine issue)
+		params.sky_color = {
+			day_sky = "#5191d0",
+			day_horizon = "#aac8e6",
+			dawn_sky = "#465d7d",
+			dawn_horizon = "#263c58",
+			night_sky = "#121820",
+			night_horizon = "#0a0f16",
+			indoors = skybox3_color[t],
+		}
+	else
+		params.type = "skybox"
+		params.base_color = fog_color
+		params.textures = {
 			"skybox2" .. t .. ".png",
 			"skybox3" .. t .. ".png",
 			"skybox1" .. t .. ".png",
 			"skybox1" .. t .. ".png",
 			"skybox1" .. t .. ".png",
 			"skybox1" .. t .. ".png"
-		},
-	})
+		}
+	end
+	player:set_sky(params)
 end
 
 local last_brightness = -1
@@ -289,10 +316,20 @@ minetest.register_on_joinplayer(function(player)
 	if last_brightness ~= nil then
 		default.set_skybox(player, last_brightness)
 	end
-	-- keep sun and moon but set invisible texture, needed for shadow support
-	player:set_sun({ texture = "blank.png", sunrise_visible = false })
-	player:set_moon({ texture = "blank.png" })
-	player:set_stars({ visible = false })
+	if default.modernize.new_skybox then
+		player:set_sun({ texture = "" })
+		player:set_moon({ texture = "" })
+		player:set_stars({
+			count = 14 * 4,
+			star_color = "#ffffff",
+			scale = 0.8,
+		})
+	else
+		-- keep sun and moon but set invisible texture, needed for shadow support
+		player:set_sun({ texture = "blank.png", sunrise_visible = false })
+		player:set_moon({ texture = "blank.png" })
+		player:set_stars({ visible = false })
+	end
 	player:set_clouds({
 		color = "#f0f0ff",
 		speed = {x=-2, z=0},

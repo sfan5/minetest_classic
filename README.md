@@ -8,7 +8,7 @@ This game is a recreation of the classic Minetest-c55 0.3 gameplay, including:
 Unlike the original it has (optional) support for:
 * Sounds
 * PvP
-* Engine features such as the modern skybox (*TBD*), waving or shadows
+* Engine features such as the modern skybox, waving or shadows
 * Modern creative inventory and per-player creative mode
 
 This is a game for the [Minetest engine](https://www.minetest.net/), install
