@@ -12,7 +12,7 @@ Unlike the original it has (optional) support for:
 * Modern creative inventory and per-player creative mode
 
 This is a game for the [Minetest engine](https://www.minetest.net/), install
-at least version 5.4.0 to play it.
+at least version 5.5.0 to play it.
 
 ## Licensing
 

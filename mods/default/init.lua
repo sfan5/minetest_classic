@@ -124,23 +124,6 @@ end
 -- Misc code
 --
 
--- polyfill: math.round (5.5)
-if math.round == nil then
-	math.round = function(x)
-		if x >= 0 then
-			return math.floor(x + 0.5)
-		end
-		return math.ceil(x - 0.5)
-	end
-end
-
--- polyfill: vector.zero (5.5)
-if vector.zero == nil then
-	vector.zero = function()
-		return vector.new(0, 0, 0)
-	end
-end
-
 -- polyfill: vector.combine (5.6)
 if vector.combine == nil then
 	vector.combine = function(a, b, func)
