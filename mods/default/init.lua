@@ -269,7 +269,7 @@ default.set_skybox = function(player, brightness)
 	}
 	if default.modernize.new_skybox then
 		params.type = "regular"
-		-- FIXME can't set the fog_color (engine issue)
+		params.fog.fog_color = fog_color -- (since 5.9.0)
 		params.sky_color = {
 			day_sky = "#5191d0",
 			day_horizon = "#aac8e6",
