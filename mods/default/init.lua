@@ -260,8 +260,9 @@ default.set_skybox = function(player, brightness)
 	elseif brightness >= 0.2 then
 		t = "_dawn"
 	end
-	local c = math.floor(brightness * 255)
-	local fog_color = string.format("#%02x%02x%02x", c, c, c)
+	-- multiply with #aac8e6, which is bgcolor_bright in game.cpp
+	local fog_color = string.format("#%02x%02x%02x", math.floor(brightness * 170),
+		math.floor(brightness * 200), math.floor(brightness * 230))
 	local params = {
 		fog = {
 			fog_start = 0.4,
