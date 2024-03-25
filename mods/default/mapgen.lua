@@ -302,7 +302,7 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 		local sminp = vector.offset(minp, 0, ii * 16, 0)
 		local smaxp = vector.new(maxp.x, sminp.y + 15, maxp.z)
 		if sminp.y <= -3 then
-			for ii = 1, (chunksize * chunksize) do
+			for n = 1, (chunksize * chunksize) do
 				if ncrandom:next(0, 1000) == 0 then
 					make_nc(self, ncrandom, sminp, smaxp)
 				end
@@ -314,6 +314,7 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 	-- The condition for clay is as follows:
 	-- (0, 1 or 2 nodes below water level) and (at the surface or one node deep)
 	-- and (where sand is) and (noise comparison suceeds)
+	local c_air = minetest.CONTENT_AIR
 	local c_sand = minetest.get_content_id("default:sand")
 	local c_clay = minetest.get_content_id("default:clay")
 	local c_water = minetest.get_content_id("default:water_source")
@@ -337,7 +338,7 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 						self.data[idx] = c_clay
 					end
 				end
-				if depth > 0 and self.data[idx] ~= core.CONTENT_AIR and self.data[idx] ~= c_water then
+				if depth > 0 and self.data[idx] ~= c_air and self.data[idx] ~= c_water then
 					depth = depth + 1
 				end
 			end

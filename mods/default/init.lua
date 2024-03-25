@@ -128,6 +128,7 @@ end
 
 -- polyfill: vector.combine (5.6)
 if vector.combine == nil then
+	-- luacheck: ignore 122
 	vector.combine = function(a, b, func)
 		return vector.new(func(a.x, b.x), func(a.y, b.y), func(a.z, b.z))
 	end
@@ -211,7 +212,7 @@ minetest.register_lbm({
 })
 
 minetest.register_on_newplayer(function(player)
-	if not core.settings:get_bool("give_initial_stuff") then
+	if not minetest.settings:get_bool("give_initial_stuff") then
 		return
 	end
 	if minetest.is_creative_enabled(player:get_player_name()) then

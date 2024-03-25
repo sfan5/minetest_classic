@@ -209,7 +209,7 @@ local Oerkki1SAO = {
 }
 
 function Oerkki1SAO:on_activate(staticdata, dtime_s)
-	if core.settings:get("only_peaceful_mobs") then
+	if minetest.settings:get("only_peaceful_mobs") then
 		self.object:remove()
 		return
 	end
@@ -266,19 +266,20 @@ function Oerkki1SAO:on_step(dtime, moveresult)
 		ndir.y = 0
 		ndir = vector.normalize(ndir)
 
-		local yaw = self.object:get_yaw()
-		local nyaw = math.atan2(ndir.z, ndir.x)
-		if nyaw < yaw - math.pi then
-			nyaw = nyaw + 2 * math.pi
-		elseif nyaw > yaw + math.pi then
-			nyaw = nyaw - 2 * math.pi
+		do
+			local yaw = self.object:get_yaw()
+			local nyaw = math.atan2(ndir.z, ndir.x)
+			if nyaw < yaw - math.pi then
+				nyaw = nyaw + 2 * math.pi
+			elseif nyaw > yaw + math.pi then
+				nyaw = nyaw - 2 * math.pi
+			end
+			self.object:set_yaw(0.95*yaw + 0.05*nyaw)
 		end
-		self.object:set_yaw(0.95*yaw + 0.05*nyaw)
-		yaw = nil
 
 		local speed = 2
 		if (moveresult.touching_ground or self.after_jump_timer > 0) and not player_is_too_close then
-			yaw = self.object:get_yaw()
+			local yaw = self.object:get_yaw()
 			local dir = vector.new(math.cos(yaw), 0, math.sin(yaw))
 			target_vel.x = speed * dir.x
 			target_vel.z = speed * dir.z
@@ -298,7 +299,7 @@ function Oerkki1SAO:on_step(dtime, moveresult)
 		self.counter2 = self.counter2 - dtime
 		if self.counter2 < 0 then
 			self.counter2 = self.counter2 + math.random(0, 300) / 100
-			yaw = self.object:get_yaw()
+			local yaw = self.object:get_yaw()
 			self.object:set_yaw(yaw + math.random(-100, 100) / 200 * math.pi)
 		end
 
@@ -610,7 +611,7 @@ function MobV2SAO:on_activate(staticdata, dtime_s)
 	for k, v in pairs(my_props) do
 		self.props[k] = v
 	end
-	if core.settings:get("only_peaceful_mobs") and not self.props.is_peaceful then
+	if minetest.settings:get("only_peaceful_mobs") and not self.props.is_peaceful then
 		self.object:remove()
 		return
 	end

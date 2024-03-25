@@ -32,7 +32,6 @@ for k, v in pairs({
 	mapgen_stone = "default:stone",
 	mapgen_water_source = "default:water_source",
 	mapgen_lava_source = "default:lava_source",
-	mapgen_cobble = "default:cobble",
 	mapgen_dirt = "default:dirt",
 	mapgen_dirt_with_grass = "default:dirt_with_grass",
 	mapgen_sand = "default:sand",
@@ -129,6 +128,7 @@ if minetest.get_mapgen_setting("mg_name") ~= "singlenode" then
 end
 
 -- for mapgen debugging
+-- luacheck: ignore 511
 if false then
 	minetest.override_item("default:stone", { drawtype = "airlike" })
 	local hl = {"coalstone", "ironstone", "mese", "clay", "gravel", "nyancat", "nyancat_rainbow"}
