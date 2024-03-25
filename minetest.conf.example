@@ -9,6 +9,9 @@
 # If enabled, hostile mobs immediately despawn.
 #only_peaceful_mobs = false
 
+# If enabled, hostile mobs will not damage the terrain.
+#no_mob_griefing = false
+
 # The modernize flags control various behaviours in Minetest Classic that
 # (when a flag is enabled) differ from how Minetest-c55 0.3 would have behaved.
 # By default a conservative but reasonable compromise between faithfulness and
