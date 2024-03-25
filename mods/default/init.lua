@@ -1654,3 +1654,6 @@ dofile(modpath .. "/furnace.lua")
 dofile(modpath .. "/sao.lua")
 dofile(modpath .. "/mapgen_setup.lua")
 dofile(modpath .. "/abm.lua")
+if minetest.settings:get_bool("minetest_classic_internal_test") then
+	dofile(modpath .. "/test.lua")
+end
