@@ -1,5 +1,7 @@
 -- https://github.com/minetest/minetest/blob/stable-0.3/src/content_nodemeta.cpp#L186
 
+local S = default.get_translator
+
 local function get_cooked(item)
 	if not item:is_empty() then
 		local ret = minetest.get_craft_result({
@@ -48,9 +50,9 @@ local function furnace_step(meta, inv, dtime)
 
 		meta:set_float("fuel_time", m_fuel_time)
 		meta:set_float("src_time", m_src_time)
-		local s = "Furnace is active"
+		local s = S("Furnace is active")
 		if m_fuel_totaltime > 3 then -- so it doesn't always show (0%) for weak fuel
-			s = s .. " (" .. math.floor(m_fuel_time/m_fuel_totaltime*100) .. "%)"
+			s = S("Furnace is active (@1%)", math.floor(m_fuel_time/m_fuel_totaltime*100))
 		end
 		meta:set_string("infotext", s)
 
@@ -59,9 +61,9 @@ local function furnace_step(meta, inv, dtime)
 			return
 		end
 	else
-		local s = "Furnace is inactive"
+		local s = S("Furnace is inactive")
 		if cooked then
-			s = room_available and "Furnace is out of fuel" or "Furnace is overloaded"
+			s = room_available and S("Furnace is out of fuel") or S("Furnace is overloaded")
 		end
 		meta:set_string("infotext", s)
 	end
@@ -91,7 +93,7 @@ local function furnace_step(meta, inv, dtime)
 		inv:set_stack("fuel", 1, fuel_item)
 	else
 		-- No fuel, stop loop.
-		meta:set_string("infotext", "Furnace is out of fuel")
+		meta:set_string("infotext", S("Furnace is out of fuel"))
 		return false
 	end
 end
@@ -115,7 +117,7 @@ minetest.override_item("default:furnace", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", FURNACE_FORMSPEC)
-		meta:set_string("infotext", "Furnace is inactive")
+		meta:set_string("infotext", S("Furnace is inactive"))
 		local inv = meta:get_inventory()
 		inv:set_size("fuel", 1)
 		inv:set_size("src", 1)

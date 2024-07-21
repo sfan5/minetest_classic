@@ -1,5 +1,7 @@
 -- creative/inventory.lua
 
+local S = creative.get_translator
+
 local player_inventory = {}
 local inventory_cache = {}
 
@@ -159,10 +161,10 @@ function creative.register_tab(name, title, items)
 					button[2.63,4.05;0.8,0.8;creative_search;?]
 					button[3.25,4.05;0.8,0.8;creative_clear;X]
 				]] ..
-				"tooltip[creative_search;" .. esc("Search") .. "]" ..
-				"tooltip[creative_clear;" .. esc("Reset") .. "]" ..
-				"tooltip[creative_prev;" .. esc("Previous page") .. "]" ..
-				"tooltip[creative_next;" .. esc("Next page") .. "]" ..
+				"tooltip[creative_search;" .. esc(S("Search")) .. "]" ..
+				"tooltip[creative_clear;" .. esc(S("Reset")) .. "]" ..
+				"tooltip[creative_prev;" .. esc(S("Previous page")) .. "]" ..
+				"tooltip[creative_next;" .. esc(S("Next page")) .. "]" ..
 				"listring[current_player;main]" ..
 				"field_close_on_enter[creative_filter;false]" ..
 				"field[0.3,4.2;2.8,1.2;creative_filter;;" .. esc(inv.filter) .. "]" ..
@@ -236,10 +238,10 @@ minetest.register_on_mods_loaded(function()
 	end
 end)
 
-creative.register_tab("all", "All", minetest.registered_items)
-creative.register_tab("nodes", "Nodes", registered_nodes)
-creative.register_tab("tools", "Tools", registered_tools)
-creative.register_tab("craftitems", "Items", registered_craftitems)
+creative.register_tab("all", S("All"), minetest.registered_items)
+creative.register_tab("nodes", S("Nodes"), registered_nodes)
+creative.register_tab("tools", S("Tools"), registered_tools)
+creative.register_tab("craftitems", S("Items"), registered_craftitems)
 
 local old_homepage_name = sfinv.get_homepage_name
 function sfinv.get_homepage_name(player)

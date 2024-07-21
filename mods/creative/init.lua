@@ -2,6 +2,9 @@
 
 creative = {}
 
+local S = minetest.get_translator("creative")
+creative.get_translator = S
+
 local function update_sfinv(name)
 	minetest.after(0, function()
 		local player = minetest.get_player_by_name(name)
@@ -16,7 +19,7 @@ local function update_sfinv(name)
 end
 
 minetest.register_privilege("creative", {
-	description = "Allow player to use creative inventory",
+	description = S("Allow player to use creative inventory"),
 	give_to_singleplayer = false,
 	give_to_admin = false,
 	on_grant = update_sfinv,
