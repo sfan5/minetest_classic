@@ -149,7 +149,7 @@ function creative.register_tab(name, title, items)
 			creative.update_creative_inventory(player_name, items)
 			local inv = player_inventory[player_name]
 			local pagenum = math.floor(inv.start_i / (4*8) + 1)
-			local pagemax = math.ceil(inv.size / (4*8))
+			local pagemax = math.max(math.ceil(inv.size / (4*8)), 1)
 			local esc = minetest.formspec_escape
 			return sfinv.make_formspec(player, context,
 				"label[5.8,4.15;" .. minetest.colorize("#FFFF00", tostring(pagenum)) .. " / " .. tostring(pagemax) .. "]" ..
@@ -157,7 +157,7 @@ function creative.register_tab(name, title, items)
 					list[detached:trash;main;4.02,4.1;1,1;]
 					listring[]
 					button[5,4.05;0.8,0.8;creative_prev;<]
-					button[7.2,4.05;0.8,0.8;creative_next;>]
+					button[7.25,4.05;0.8,0.8;creative_next;>]
 					button[2.63,4.05;0.8,0.8;creative_search;?]
 					button[3.25,4.05;0.8,0.8;creative_clear;X]
 				]] ..
@@ -166,6 +166,7 @@ function creative.register_tab(name, title, items)
 				"tooltip[creative_prev;" .. esc(S("Previous page")) .. "]" ..
 				"tooltip[creative_next;" .. esc(S("Next page")) .. "]" ..
 				"listring[current_player;main]" ..
+				"field_enter_after_edit[creative_filter;true]" ..
 				"field_close_on_enter[creative_filter;false]" ..
 				"field[0.3,4.2;2.8,1.2;creative_filter;;" .. esc(inv.filter) .. "]" ..
 				"listring[detached:creative_" .. player_name .. ";main]" ..
@@ -188,10 +189,13 @@ function creative.register_tab(name, title, items)
 				inv.start_i = 0
 				inv.filter = ""
 				sfinv.set_player_inventory_formspec(player, context)
-			elseif fields.creative_search or
-					fields.key_enter_field == "creative_filter" then
+			elseif (fields.creative_search or
+					fields.key_enter_field == "creative_filter")
+					and fields.creative_filter then
 				inv.start_i = 0
-				inv.filter = fields.creative_filter:lower()
+				inv.filter = fields.creative_filter:sub(1, 128) -- truncate to a sane length
+						:gsub("[%z\1-\8\11-\31\127]", "") -- strip naughty control characters (keeps \t and \n)
+						:lower() -- search is case insensitive
 				sfinv.set_player_inventory_formspec(player, context)
 			elseif not fields.quit then
 				local start_i = inv.start_i or 0
