@@ -37,6 +37,7 @@ Torch=
 Sign=
 Some sign=
 "@1"=
+Text too long=
 Chest=
 Locking Chest=
 Furnace=
