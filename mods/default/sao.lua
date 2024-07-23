@@ -54,11 +54,6 @@ local function checkFreeAndWalkablePosition(p0, size)
 end
 
 local function explodeSquare(p0, size)
-	if default.modernize.sounds then
-		minetest.sound_play("explode", {
-			pos = p0,
-		}, true)
-	end
 	-- FIXME: callbacks / indestructability?
 	local positions = {}
 	for dx = 0, size.x - 1 do
@@ -865,7 +860,16 @@ function MobV2SAO:on_step(dtime, moveresult)
 		end
 
 		if not checkFreePosition(vector.add(pos_i, pos_size_off), size_blocks) then
-			explodeSquare(pos_i, vector.new(3, 3, 3))
+			if default.modernize.sounds then
+				minetest.sound_play("explode", {
+					pos = pos_i,
+				}, true)
+			end
+
+			if not minetest.settings:get_bool("no_mob_griefing", false) then
+				explodeSquare(pos_i, vector.new(3, 3, 3))
+			end
+
 			self.object:remove()
 			return
 		end
