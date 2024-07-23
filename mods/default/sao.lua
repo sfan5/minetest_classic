@@ -865,7 +865,7 @@ function MobV2SAO:on_step(dtime, moveresult)
 				}, true)
 			end
 
-			if core.settings:get("no_mob_griefing") ~= "true" then
+			if not core.settings:get_bool("no_mob_griefing", false) then
 				explodeSquare(pos_i, vector.new(3, 3, 3))
 			end
 
