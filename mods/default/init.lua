@@ -38,11 +38,11 @@ default.get_translator = S
 -- sound ideas: furnace, eating
 -- falling sand/gravel
 -- investigate long vertical shafts (mgv6 fail?)
+-- some particle effects
 
 -- long-term TODOs?:
 -- consider adding unfinished features like firefly spawn & standing signs
 -- texture animations for some
--- protection support
 -- 3d model signs and torches
 -- maybe 3d model mobs
 
@@ -895,6 +895,10 @@ minetest.register_node("default:sign_wall", {
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		local player_name = sender:get_player_name()
+		if minetest.is_protected(pos, player_name) then
+			minetest.record_protection_violation(pos, player_name)
+			return
+		end
 		local meta = minetest.get_meta(pos)
 		local text = fields.text
 		if not text then
@@ -910,6 +914,20 @@ minetest.register_node("default:sign_wall", {
 		meta:set_string("infotext", S('"@1"', text))
 	end,
 })
+
+local function can_dig_chest(pos, player)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+	if not inv:is_empty("main") then
+		return false
+	end
+	local player_name = player:get_player_name()
+	if minetest.is_protected(pos, player_name) then
+		minetest.record_protection_violation(pos, player_name)
+		return false
+	end
+	return true
+end
 
 minetest.register_node("default:chest", {
 	description = S("Chest"),
@@ -929,22 +947,22 @@ minetest.register_node("default:chest", {
 		local inv = meta:get_inventory()
 		inv:set_size("main", 8*4)
 	end,
-	can_dig = function(pos, player)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		return inv:is_empty("main")
-	end,
+	can_dig = can_dig_chest,
 })
 
 local function can_use_locked_chest(meta, player)
-	if meta:get_string("owner") == player:get_player_name() then
-		return true
+	local player_name = player:get_player_name()
+	if meta:get_string("owner") ~= player_name then
+		-- 0.3 uses the 'server' priv for this
+		if not minetest.check_player_privs(player, "protection_bypass") then
+			return false
+		end
 	end
-	-- 0.3 uses the 'server' priv for this
-	if minetest.check_player_privs(player, "protection_bypass") then
-		return true
+	if minetest.is_protected(pos, player_name) then
+		minetest.record_protection_violation(pos, player_name)
+		return false
 	end
-	return false
+	return true
 end
 
 minetest.register_node("default:chest_locked", {
@@ -970,11 +988,8 @@ minetest.register_node("default:chest_locked", {
 		local inv = meta:get_inventory()
 		inv:set_size("main", 8*4)
 	end,
-	can_dig = function(pos, player)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		return inv:is_empty("main")
-	end,
+	-- note: can_dig_chest() does not check the owner, this is intentional.
+	can_dig = can_dig_chest,
 	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
 		local meta = minetest.get_meta(pos)
 		if not can_use_locked_chest(meta, player) then

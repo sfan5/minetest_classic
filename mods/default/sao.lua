@@ -54,12 +54,15 @@ local function checkFreeAndWalkablePosition(p0, size)
 end
 
 local function explodeSquare(p0, size)
-	-- FIXME: callbacks / indestructability?
+	-- FIXME: implement on_blast & item drops
 	local positions = {}
 	for dx = 0, size.x - 1 do
 	for dy = 0, size.y - 1 do
 	for dz = 0, size.z - 1 do
-		positions[#positions+1] = vector.offset(p0, dx, dy, dz)
+		local p = vector.offset(p0, dx, dy, dz)
+		if not minetest.is_protected(p, "") then
+			positions[#positions+1] = p
+		end
 	end
 	end
 	end

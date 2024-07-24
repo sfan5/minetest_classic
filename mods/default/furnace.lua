@@ -129,7 +129,15 @@ minetest.override_item("default:furnace", {
 	can_dig = function(pos, player)
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
-		return inv:is_empty("fuel") and inv:is_empty("src") and inv:is_empty("dest")
+		if inv:is_empty("fuel") and inv:is_empty("src") and inv:is_empty("dest") then
+			local player_name = player:get_player_name()
+			if minetest.is_protected(pos, player_name) then
+				minetest.record_protection_violation(pos, player_name)
+				return false
+			end
+			return true
+		end
+		return false
 	end,
 
 	on_timer = function(pos, elapsed)
@@ -147,6 +155,31 @@ minetest.override_item("default:furnace", {
 			elapsed = elapsed - FURNACE_INTERVAL
 		end
 		return true
+	end,
+
+	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
+		local player_name = player:get_player_name()
+		if minetest.is_protected(pos, player_name) then
+			minetest.record_protection_violation(pos, player_name)
+			return 0
+		end
+		return count
+	end,
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		local player_name = player:get_player_name()
+		if minetest.is_protected(pos, player_name) then
+			minetest.record_protection_violation(pos, player_name)
+			return 0
+		end
+		return stack:get_count()
+	end,
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		local player_name = player:get_player_name()
+		if minetest.is_protected(pos, player_name) then
+			minetest.record_protection_violation(pos, player_name)
+			return 0
+		end
+		return stack:get_count()
 	end,
 
 	--on_punch = function(pos, node)
