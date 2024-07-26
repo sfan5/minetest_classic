@@ -950,7 +950,8 @@ minetest.register_node("default:chest", {
 	can_dig = can_dig_chest,
 })
 
-local function can_use_locked_chest(meta, player)
+local function can_use_locked_chest(pos, player)
+	local meta = minetest.get_meta(pos)
 	local player_name = player:get_player_name()
 	if meta:get_string("owner") ~= player_name then
 		-- 0.3 uses the 'server' priv for this
@@ -991,22 +992,19 @@ minetest.register_node("default:chest_locked", {
 	-- note: can_dig_chest() does not check the owner, this is intentional.
 	can_dig = can_dig_chest,
 	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
-		local meta = minetest.get_meta(pos)
-		if not can_use_locked_chest(meta, player) then
+		if not can_use_locked_chest(pos, player) then
 			return 0
 		end
 		return count
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		local meta = minetest.get_meta(pos)
-		if not can_use_locked_chest(meta, player) then
+		if not can_use_locked_chest(pos, player) then
 			return 0
 		end
 		return stack:get_count()
 	end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		local meta = minetest.get_meta(pos)
-		if not can_use_locked_chest(meta, player) then
+		if not can_use_locked_chest(pos, player) then
 			return 0
 		end
 		return stack:get_count()
