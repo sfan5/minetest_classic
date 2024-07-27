@@ -105,11 +105,13 @@ local function parse_flagstr(dest, s)
 	local flags = string.split(s, ",", false)
 	for _, flag in ipairs(flags) do
 		flag = flag:gsub("^%s*", ""):gsub("%s*$", "")
-		-- "node" also begins with "no" hence the extra check
 		if flag:sub(1, 2) == "no" and rawget(dest, flag:sub(3)) ~= nil then
 			dest[flag:sub(3)] = false
-		else
+		elseif rawget(dest, flag) ~= nil then
 			dest[flag] = true
+		else
+			minetest.log("warning",
+				("Ignoring unknown modernize flag: %q"):format(flag))
 		end
 	end
 end
