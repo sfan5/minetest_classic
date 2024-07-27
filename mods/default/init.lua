@@ -39,6 +39,8 @@ default.get_translator = S
 -- falling sand/gravel
 -- investigate long vertical shafts (mgv6 fail?)
 -- some particle effects
+-- make clouds flat
+-- option to make mobs not perfectly flat?
 
 -- long-term TODOs?:
 -- consider adding unfinished features like firefly spawn & standing signs
