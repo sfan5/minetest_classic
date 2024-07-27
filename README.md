@@ -1,5 +1,7 @@
 # Minetest Classic
 
+[![ContentDB](https://content.minetest.net/packages/sfan5/minetest_classic/shields/downloads/)](https://content.minetest.net/packages/sfan5/minetest_classic/)
+
 This game is a recreation of the classic Minetest-c55 0.3 gameplay, including:
 
 * Original textures
