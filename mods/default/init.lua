@@ -41,7 +41,6 @@ default.get_translator = S
 -- falling sand/gravel
 -- investigate long vertical shafts (mgv6 fail?)
 -- some particle effects
--- make clouds flat
 -- option to make mobs not perfectly flat? (think extruded mesh)
 
 -- long-term TODOs?:
@@ -83,6 +82,8 @@ default.modernize = {
 	pvp = false,
 	-- Use engine's dynamic skybox with sun and moon
 	new_skybox = false,
+	-- Allow clients to use 3D clouds
+	["3d_clouds"] = false,
 
 	-- TODO disable_rightclick_drop, allow_drop, glasslike_framed
 }
@@ -340,10 +341,14 @@ minetest.register_on_joinplayer(function(player)
 		player:set_moon({ texture = "blank.png" })
 		player:set_stars({ visible = false })
 	end
-	player:set_clouds({
+	local clouds = {
 		color = "#f0f0ff",
 		speed = {x=-2, z=0},
-	})
+	}
+	if not default.modernize["3d_clouds"] then
+		clouds.thickness = 0.0005
+	end
+	player:set_clouds(clouds)
 end)
 
 --

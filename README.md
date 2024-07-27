@@ -16,6 +16,8 @@ Unlike the original it has (optional) support for:
 * Engine features such as the modern skybox, waving or shadows
 * Modern creative inventory and per-player creative mode
 
+To enable some of the modern features check out "Modernize flags" in the settings menu.
+
 This is a game for the [Minetest engine](https://www.minetest.net/), install
 at least version 5.5.0 to play it.
 
