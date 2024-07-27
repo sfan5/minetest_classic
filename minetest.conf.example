@@ -1,4 +1,4 @@
-# This file contains settings of Minetest Game that can be changed in
+# This file contains settings of Minetest Classic that can be changed in
 # minetest.conf.
 # By default, all the settings are commented and not functional.
 # Uncomment settings by removing the preceding #.
@@ -18,7 +18,7 @@
 # modern engine features is enabled.
 # Note that some differences in behaviour are unavoidable or miniscule, not
 # everything is configurable.
-modernize = node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand
+#modernize = node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand
 
 # If enabled, players leave footprints when walking over grass.
 #footprints = false

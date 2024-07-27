@@ -30,6 +30,8 @@ default.get_translator = S
 
 -- TODO set is_ground_content sanely or exactly as in orginal?
 
+-- TODO it might make sense to rename 'default' to not get in the way of MTG-compatible mods
+
 -- TODOs:
 -- come up with some sane item groups to use
 -- generate failed dungeons in water (like an U)
@@ -40,7 +42,7 @@ default.get_translator = S
 -- investigate long vertical shafts (mgv6 fail?)
 -- some particle effects
 -- make clouds flat
--- option to make mobs not perfectly flat?
+-- option to make mobs not perfectly flat? (think extruded mesh)
 
 -- long-term TODOs?:
 -- consider adding unfinished features like firefly spawn & standing signs
