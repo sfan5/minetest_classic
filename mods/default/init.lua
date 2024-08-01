@@ -144,7 +144,7 @@ if vector.combine == nil then
 end
 
 -- returns drop_count, objref
-local function item_to_entity(pos, itemstack)
+default.item_to_entity = function(pos, itemstack)
 	if itemstack:get_name() == "default:rat" then
 		return 1, minetest.add_entity(pos, "default:rat")
 	elseif itemstack:get_name() == "default:firefly" then
@@ -156,17 +156,17 @@ end
 local old_item_place = minetest.item_place
 minetest.item_place = function(itemstack, placer, pointed_thing, ...)
 	local itemstack, pos = old_item_place(itemstack, placer, pointed_thing, ...)
-	-- When rightclicking a node with an item the item is dropped on top
+	-- When rightclicking a node with an item the item is dropped on top:
 	-- FIXME this might break on_rightclick if we're not careful
 	if pos == nil and pointed_thing.type == "node" and
 		not minetest.registered_nodes[itemstack:get_name()] then
 		pos = vector.new(pointed_thing.above)
 		pos.x = pos.x + math.random(-200, 200) / 1000
 		pos.z = pos.z + math.random(-200, 200) / 1000
-		local drop_count, obj = item_to_entity(pos, itemstack)
+		local drop_count, obj = default.item_to_entity(pos, itemstack)
 		if obj then
 			local ret = itemstack
-			if not minetest.is_creative_enabled(placer:get_player_name()) then
+			if not minetest.is_creative_enabled(placer:get_player_name() or "") then
 				ret:take_item(drop_count)
 			end
 			return ret, nil
@@ -796,8 +796,8 @@ minetest.register_node("default:water_source", {
 	sounds = default.node_sound.water,
 })
 
--- TODO consider darkening the texture, since the original lava is unlighted
--- despite emitting light (so it looks much darker)
+-- Note: Lava is does not seem to properly emit light in 0.3.
+-- I didn't care to replicate this.
 
 minetest.register_node("default:lava_flowing", {
 	description = S("Lava"),

@@ -167,10 +167,12 @@ function RatSAO:on_step(dtime, moveresult)
 end
 
 function RatSAO:on_punch(hitter)
-	local item = "default:rat"
-	minetest.log("action", hitter:get_player_name() .. " picked up " .. item)
-	if not minetest.is_creative_enabled(hitter:get_player_name()) then
-		hitter:get_inventory():add_item("main", item)
+	if hitter and hitter:is_player() then
+		local item = "default:rat"
+		minetest.log("action", hitter:get_player_name() .. " picked up " .. item)
+		if not minetest.is_creative_enabled(hitter:get_player_name()) then
+			hitter:get_inventory():add_item("main", item)
+		end
 	end
 	self.object:remove()
 end
@@ -353,10 +355,12 @@ function Oerkki1SAO:on_punch(hitter, time_from_last_punch)
 		return true
 	end
 
-	local dir = vector.subtract(self.object:get_pos(), hitter:get_pos())
-	dir = vector.normalize(dir)
-	self.object:set_velocity(vector.add(self.object:get_velocity(),
-		vector.multiply(dir, 12)))
+	if hitter then
+		local dir = vector.subtract(self.object:get_pos(), hitter:get_pos())
+		dir = vector.normalize(dir)
+		self.object:set_velocity(vector.add(self.object:get_velocity(),
+			vector.multiply(dir, 12)))
+	end
 end
 
 minetest.register_entity("default:oerkki1", Oerkki1SAO)
@@ -441,10 +445,12 @@ function FireflySAO:on_step(dtime, moveresult)
 end
 
 function FireflySAO:on_punch(hitter)
-	local item = "default:firefly"
-	minetest.log("action", hitter:get_player_name() .. " picked up " .. item)
-	if not minetest.is_creative_enabled(hitter:get_player_name()) then
-		hitter:get_inventory():add_item("main", item)
+	if hitter and hitter:is_player() then
+		local item = "default:firefly"
+		minetest.log("action", hitter:get_player_name() .. " picked up " .. item)
+		if not minetest.is_creative_enabled(hitter:get_player_name()) then
+			hitter:get_inventory():add_item("main", item)
+		end
 	end
 	self.object:remove()
 end
@@ -884,6 +890,10 @@ end
 function MobV2SAO:on_punch(hitter, time_from_last_punch)
 	if (time_from_last_punch or 0) <= 0.5 then
 		return true
+	end
+	if not (hitter and hitter:is_player()) then
+		-- let engine apply damage but do nothing else
+		return
 	end
 
 	self.disturb_timer = 0
