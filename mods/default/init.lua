@@ -53,31 +53,32 @@ default.get_translator = S
 -- Modernize setting
 --
 
+-- note: this table contains the default values
 default.modernize = {
 	-- 'waving' set on suitable nodes
-	node_waving = false,
+	node_waving = true,
 	-- glass uses glasslike drawtype instead of allfaces
-	glasslike = false,
+	glasslike = true,
 	-- Breathbar/drowning is enabled
-	drowning = false,
+	drowning = true,
 	-- Lava is not renewable
 	lava_non_renewable = false,
 	-- Allows the engine shadowmapping to be used
-	allow_shadows = false,
+	allow_shadows = true,
 	-- Allows the minimap to be used
 	allow_minimap = false,
 	-- Allows the player to zoom
 	allow_zoom = false,
 	-- Keeps the (new) item entity from the engine instead of emulating the old one
-	new_item_entity = false,
+	new_item_entity = true,
 	-- Don't delete Oerkki if the player gets too close
-	disable_oerkki_delete = false,
+	disable_oerkki_delete = true,
 	-- Replace some textures that look out of place/unfinished
-	fix_textures = false,
+	fix_textures = true,
 	-- Enable sounds
-	sounds = false,
+	sounds = true,
 	-- Add a wieldhand texture instead of having it invisible
-	wieldhand = false,
+	wieldhand = true,
 	-- Allows PvP
 	pvp = false,
 	-- Use engine's dynamic skybox with sun and moon
@@ -87,7 +88,6 @@ default.modernize = {
 
 	-- TODO disable_rightclick_drop, allow_drop, glasslike_framed
 }
-local modernize_default = "node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand"
 
 do
 	local warned = {}
@@ -117,12 +117,30 @@ local function parse_flagstr(dest, s)
 	end
 end
 
+-- for generating the line in settingtypes.txt
+-- luacheck: ignore 511
+if false then
+	local t1, t2 = {}, {}
+	for k, v in pairs(default.modernize) do
+		if v then
+			t1[#t1+1] = k
+		end
+		t2[#t2+1] = k
+	end
+	print("----")
+	print("modernize (Modernize flags) flags " .. table.concat(t1, ",") .. " " .. table.concat(t2, ","))
+	print("----")
+end
+
 do
 	local s = minetest.settings:get("modernize")
-	if (s or "") == "" then
-		s = modernize_default
+	if (s or "") ~= "" then
+		-- reset and parse user setting
+		for k, _ in pairs(default.modernize) do
+			default.modernize[k] = false
+		end
+		parse_flagstr(default.modernize, s)
 	end
-	parse_flagstr(default.modernize, s)
 	local n, ntot = 0, 0
 	for _, value in pairs(default.modernize) do
 		n = n + (value and 1 or 0)
