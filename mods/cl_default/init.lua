@@ -120,7 +120,6 @@ local function parse_flagstr(dest, s)
 	end
 end
 
--- for generating the line in settingtypes.txt
 -- luacheck: ignore 511
 if false then
 	local t1, t2 = {}, {}
@@ -130,9 +129,13 @@ if false then
 		end
 		t2[#t2+1] = k
 	end
-	print("----")
+	table.sort(t1)
+	table.sort(t2)
+	print("== put in settintypes.txt ==")
 	print("modernize (Modernize flags) flags " .. table.concat(t1, ",") .. " " .. table.concat(t2, ","))
-	print("----")
+	print("== put in minetest.conf.example ==")
+	print("#modernize = " .. table.concat(t1, ","))
+	print("====")
 end
 
 do

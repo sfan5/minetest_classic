@@ -18,7 +18,7 @@
 # modern engine features is enabled.
 # Note that some differences in behaviour are unavoidable or miniscule, not
 # everything is configurable.
-#modernize = node_waving,glasslike,drowning,allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,sounds,wieldhand
+#modernize = allow_drop,allow_shadows,disable_oerkki_delete,drowning,fix_textures,glasslike,new_item_entity,node_waving,sounds,wieldhand
 
 # If enabled, players leave footprints when walking over grass.
 #footprints = false

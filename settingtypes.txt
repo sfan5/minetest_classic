@@ -16,7 +16,7 @@ no_mob_griefing (No mob griefing) bool false
 #    modern engine features is enabled.
 #    Note that some differences in behaviour are unavoidable or miniscule, not
 #    everything is configurable.
-modernize (Modernize flags) flags allow_shadows,new_item_entity,disable_oerkki_delete,fix_textures,wieldhand,drowning,allow_drop,sounds,node_waving,glasslike lava_non_renewable,allow_shadows,allow_minimap,allow_zoom,new_item_entity,disable_oerkki_delete,fix_textures,wieldhand,pvp,drowning,3d_clouds,allow_drop,new_skybox,sounds,node_waving,glasslike
+modernize (Modernize flags) flags allow_drop,allow_shadows,disable_oerkki_delete,drowning,fix_textures,glasslike,new_item_entity,node_waving,sounds,wieldhand 3d_clouds,allow_drop,allow_minimap,allow_shadows,allow_zoom,disable_oerkki_delete,drowning,fix_textures,glasslike,lava_non_renewable,new_item_entity,new_skybox,node_waving,pvp,sounds,wieldhand
 
 #    If enabled, players leave footprints when walking over grass.
 footprints (Footprints) bool false
