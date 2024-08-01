@@ -559,8 +559,10 @@ minetest.register_node(":default:dirt_with_grass", {
 
 minetest.register_node(":default:dirt_with_grass_footsteps", {
 	description = S("Dirt With Grass and Footsteps"),
-	tiles = { "grass_footsteps.png", "mud.png", "grass_side.png" },
-	-- TODO find better texture here?
+	tiles = {
+		default.modernize.fix_textures and "grass_footsteps.png" or "grass_footsteps_old.png",
+		"mud.png", "grass_side.png"
+	},
 	groups = { dirt = 2, not_in_creative_inventory = 1 },
 	drop = "default:dirt",
 	sounds = default.node_sound.grass,
