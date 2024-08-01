@@ -578,8 +578,12 @@ minetest.register_node("default:jungletree", {
 minetest.register_node("default:junglegrass", {
 	description = S("Jungle Grass"),
 	drawtype = "plantlike",
-	visual_scale = 2, -- TODO need on Y only
-	tiles = {"junglegrass.png"},
+	visual_scale = 2,
+	-- we want the 2x scale to only apply on Y, so add appropriate empty space on X.
+	-- also we're cutting off the bottom 9px (actually 8 and the last pixel is
+	-- rendered inside the below node, but we can't emulate this).
+	-- caveat: this ruins texture packs with different pixel sizes -> engine limitation
+	tiles = {"[combine:32x16:8,1=junglegrass.png"},
 	inventory_image = "junglegrass.png",
 	wield_image = "junglegrass.png",
 	paramtype = "light",
