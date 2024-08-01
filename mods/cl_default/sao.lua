@@ -177,7 +177,7 @@ function RatSAO:on_punch(hitter)
 	self.object:remove()
 end
 
-minetest.register_entity("default:rat", RatSAO)
+minetest.register_entity(":default:rat", RatSAO)
 
 --
 -- Oerkki1SAO
@@ -363,7 +363,7 @@ function Oerkki1SAO:on_punch(hitter, time_from_last_punch)
 	end
 end
 
-minetest.register_entity("default:oerkki1", Oerkki1SAO)
+minetest.register_entity(":default:oerkki1", Oerkki1SAO)
 
 --
 -- FireflySAO
@@ -455,7 +455,7 @@ function FireflySAO:on_punch(hitter)
 	self.object:remove()
 end
 
-minetest.register_entity("default:firefly", FireflySAO)
+minetest.register_entity(":default:firefly", FireflySAO)
 
 --
 -- MobV2SAO
@@ -923,4 +923,4 @@ end
 --	print(dump(self))
 --end
 
-minetest.register_entity("default:mobv2", MobV2SAO)
+minetest.register_entity(":default:mobv2", MobV2SAO)
