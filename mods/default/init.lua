@@ -36,7 +36,6 @@ default.get_translator = S
 -- come up with some sane item groups to use
 -- generate failed dungeons in water (like an U)
 -- do stone deserts appear naturally?
--- 'footprints'
 -- sound ideas: furnace, eating
 -- falling sand/gravel
 -- investigate long vertical shafts (mgv6 fail?)
@@ -249,6 +248,24 @@ minetest.register_lbm({
 		end
 	end,
 })
+
+minetest.register_globalstep(function()
+	if not minetest.settings:get_bool("footprints") then
+		return
+	end
+	for _, player in ipairs(minetest.get_connected_players()) do
+		local bottompos = vector.round(vector.offset(player:get_pos(), 0, -1/4, 0))
+		local n = minetest.get_node(bottompos)
+		if n.name == "default:dirt_with_grass" then
+			-- A long argument could be had whether you are allowed to trample
+			-- over someone else's protected lawn. Let's just say no.
+			if not minetest.is_protected(bottompos, player:get_player_name()) then
+				n.name = "default:dirt_with_grass_footsteps"
+				minetest.swap_node(bottompos, n)
+			end
+		end
+	end
+end)
 
 minetest.register_on_newplayer(function(player)
 	if not minetest.settings:get_bool("give_initial_stuff") then
