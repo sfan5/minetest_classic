@@ -85,8 +85,10 @@ default.modernize = {
 	new_skybox = false,
 	-- Allow clients to use 3D clouds
 	["3d_clouds"] = false,
+	-- Allow directly dropping items in the world, otherwise only rightclick works
+	allow_drop = true,
 
-	-- TODO disable_rightclick_drop, allow_drop, glasslike_framed
+	-- TODO disable_rightclick_drop, glasslike_framed
 }
 
 do
@@ -191,6 +193,16 @@ minetest.item_place = function(itemstack, placer, pointed_thing, ...)
 		end
 	end
 	return itemstack, nil
+end
+
+if not default.modernize.allow_drop then
+	local old_item_drop = minetest.item_drop
+	minetest.item_drop = function(itemstack, dropper, ...)
+		if dropper and dropper:is_player() then
+			return itemstack
+		end
+		return old_item_drop(itemstack, dropper, ...)
+	end
 end
 
 minetest.register_on_joinplayer(function(player)
