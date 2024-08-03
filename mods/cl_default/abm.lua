@@ -44,6 +44,7 @@ minetest.register_abm({
 	chance = 200,
 	catch_up = false,
 	action = function(pos, node, active_object_count, active_object_count_wider)
+		-- FIXME: this becomes problematic if users use other mods that spawn entities
 		if active_object_count_wider > 0 then
 			return
 		end
@@ -60,7 +61,7 @@ minetest.register_abm({
 -- Fun things spawn in caves and dungeons
 minetest.register_abm({
 	label = "Mob Spawning",
-	nodenames = {"default:cobble", "default:mossycobble"},
+	nodenames = {"default:stone", "default:mossycobble"},
 	interval = 10,
 	chance = 200,
 	catch_up = false,
