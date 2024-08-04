@@ -1226,9 +1226,11 @@ minetest.register_tool(":default:pick_mese", {
 	inventory_image = "tool_mesepick.png",
 	tool_capabilities = {
 		groupcaps = {
+			-- digs everything instantly
 			dirt = { times = levels(default.dirt_levels, 0), uses = 1337 },
 			stone = { times = levels(default.stone_levels, 0), uses = 1337 },
 			wood = { times = levels(default.wood_levels, 0), uses = 1337 },
+			dig_hand = { times = { 0, 0 }, uses = 1337 },
 			dig_mese = { times = { 0 }, uses = 1337 },
 		},
 	},
