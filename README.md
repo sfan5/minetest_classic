@@ -5,7 +5,7 @@
 This game is a recreation of the classic Minetest-c55 0.3 gameplay, including:
 
 * Original textures
-* All four mobs
+* All four mobs¹
 * Identical items, crafting recipes, dig times; closely matched ore distribution
 
 Unlike the original it has (optional) support for:
@@ -20,6 +20,8 @@ To enable some of the modern features check out "Modernize flags" in the setting
 
 This is a game for the [Minetest engine](https://www.minetest.net/), install
 at least version 5.5.0 to play it.
+
+**¹**: Fireflies do not spawn naturally and are only available in creative mode.
 
 ## Credits
 
