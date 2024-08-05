@@ -680,6 +680,7 @@ function MobV2SAO:stepVisuals(dtime, pos)
 			self.player_hit_timer = self.props.player_hit_interval
 		end
 	end
+	self.player_hit_timer = self.player_hit_timer - dtime
 
 	self.walking_unset_timer = self.walking_unset_timer + dtime
 	if self.walking_unset_timer >= 1 then
