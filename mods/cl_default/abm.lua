@@ -6,15 +6,14 @@
 minetest.register_abm({
 	label = "Mud to Grass",
 	nodenames = {"default:dirt"},
-	neighbors = {"air", "group:air_equivalent"},
+	neighbors = {"group:air_equivalent"},
 	interval = 10,
 	chance = 20,
 	catch_up = false, -- Back in my day we had no such thing
 	action = function(pos, node)
 		local p1 = vector.offset(pos, 0, 1, 0)
 		local above = minetest.get_node(p1)
-		local has_air = above.name == "air" or minetest.get_item_group(above.name, "air_equivalent") > 0
-		if has_air and minetest.get_node_light(p1) >= 13 then
+		if minetest.get_item_group(above.name, "air_equivalent") > 0 and minetest.get_node_light(p1) >= 13 then
 			node.name = "default:dirt_with_grass"
 			minetest.swap_node(pos, node)
 		end
@@ -29,7 +28,7 @@ minetest.register_abm({
 	catch_up = false,
 	action = function(pos, node)
 		local above = minetest.get_node(vector.offset(pos, 0, 1, 0))
-		if above.name ~= "air" and minetest.get_item_group(above.name, "air_equivalent") == 0 then
+		if minetest.get_item_group(above.name, "air_equivalent") == 0 then
 			node.name = "default:dirt"
 			minetest.swap_node(pos, node)
 		end

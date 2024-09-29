@@ -243,8 +243,7 @@ minetest.register_lbm({
 		if dtime_s > 300 then
 			local p1 = vector.offset(pos, 0, 1, 0)
 			local above = minetest.get_node(p1)
-			local has_air = above.name == "air" or minetest.get_item_group(above.name, "air_equivalent") > 0
-			if has_air and minetest.get_node_light(p1, 0.5) >= 13 then
+			if minetest.get_item_group(above.name, "air_equivalent") > 0 and minetest.get_node_light(p1, 0.5) >= 13 then
 				node.name = "default:dirt_with_grass"
 				minetest.swap_node(pos, node)
 			end
@@ -535,6 +534,14 @@ end
 --
 -- Nodes
 --
+
+do
+	local groups = table.copy(minetest.registered_nodes["air"].groups)
+	groups.air_equivalent = 1
+	minetest.override_item("air", {
+		groups = groups,
+	})
+end
 
 minetest.register_node(":default:stone", {
 	description = S("Stone"),
