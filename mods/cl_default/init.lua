@@ -84,8 +84,6 @@ default.modernize = {
 	pvp = false,
 	-- Use engine's dynamic skybox with sun and moon
 	new_skybox = false,
-	-- Allow clients to use 3D clouds
-	["3d_clouds"] = false,
 	-- Allow directly dropping items in the world, otherwise only rightclick works
 	allow_drop = true,
 
@@ -131,7 +129,7 @@ if false then
 	end
 	table.sort(t1)
 	table.sort(t2)
-	print("== put in settintypes.txt ==")
+	print("== put in settingtypes.txt ==")
 	print("modernize (Modernize flags) flags " .. table.concat(t1, ",") .. " " .. table.concat(t2, ","))
 	print("== put in minetest.conf.example ==")
 	print("#modernize = " .. table.concat(t1, ","))
@@ -397,9 +395,6 @@ minetest.register_on_joinplayer(function(player)
 		color = "#f0f0ff",
 		speed = {x=-2, z=0},
 	}
-	if not default.modernize["3d_clouds"] then
-		clouds.thickness = 0.0005
-	end
 	player:set_clouds(clouds)
 end)
 
