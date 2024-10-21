@@ -545,7 +545,7 @@ end
 
 minetest.register_node(":default:stone", {
 	description = S("Stone"),
-	tiles = { "stone.png" },
+	tiles = { "default_stone.png" },
 	groups = { stone = 4 },
 	drop = "default:cobble",
 	sounds = default.node_sound.stone,
@@ -553,7 +553,7 @@ minetest.register_node(":default:stone", {
 
 minetest.register_node(":default:dirt_with_grass", {
 	description = S("Dirt With Grass"),
-	tiles = { "grass.png", "mud.png", "grass_side.png" },
+	tiles = { "default_grass.png", "default_dirt.png", "default_dirt.png^default_grass_side.png" },
 	groups = { dirt = 2 },
 	drop = "default:dirt",
 	sounds = default.node_sound.grass,
@@ -563,7 +563,7 @@ minetest.register_node(":default:dirt_with_grass_footsteps", {
 	description = S("Dirt With Grass and Footsteps"),
 	tiles = {
 		default.modernize.fix_textures and "grass_footsteps.png" or "grass_footsteps_old.png",
-		"mud.png", "grass_side.png"
+		"default_dirt.png", "default_grass_side.png"
 	},
 	groups = { dirt = 2, not_in_creative_inventory = 1 },
 	drop = "default:dirt",
@@ -572,28 +572,28 @@ minetest.register_node(":default:dirt_with_grass_footsteps", {
 
 minetest.register_node(":default:dirt", {
 	description = S("Dirt"),
-	tiles = { "mud.png" },
+	tiles = { "default_dirt.png" },
 	groups = { dirt = 2 },
 	sounds = default.node_sound.dirt,
 })
 
 minetest.register_node(":default:sand", {
 	description = S("Sand"),
-	tiles = { "sand.png" },
+	tiles = { "default_sand.png" },
 	groups = { dirt = 2 },
 	sounds = default.node_sound.sand,
 })
 
 minetest.register_node(":default:gravel", {
 	description = S("Gravel"),
-	tiles = { "gravel.png" },
+	tiles = { "default_gravel.png" },
 	groups = { dirt = 3 },
 	sounds = default.node_sound.gravel,
 })
 
 minetest.register_node(":default:sandstone", {
 	description = S("Sandstone"),
-	tiles = { "sandstone.png" },
+	tiles = { "default_sandstone.png" },
 	groups = { dirt = 2 },
 	drop = "default:sand",
 	sounds = default.node_sound.stone,
@@ -601,7 +601,7 @@ minetest.register_node(":default:sandstone", {
 
 minetest.register_node(":default:clay", {
 	description = S("Clay"),
-	tiles = { "clay.png" },
+	tiles = { "default_clay.png" },
 	groups = { dirt = 2 },
 	drop = "default:lump_of_clay 4",
 	sounds = default.node_sound.dirt,
@@ -609,7 +609,7 @@ minetest.register_node(":default:clay", {
 
 minetest.register_node(":default:brick", {
 	description = S("Brick"),
-	tiles = { "brick.png" },
+	tiles = { "default_brick.png" },
 	groups = { stone = 4 },
 	drop = "default:clay_brick 4",
 	sounds = default.node_sound.stone,
@@ -617,7 +617,7 @@ minetest.register_node(":default:brick", {
 
 minetest.register_node(":default:tree", {
 	description = S("Tree Trunk"),
-	tiles = { "tree_top.png", "tree_top.png", "tree.png" },
+	tiles = { "default_tree_top.png", "default_tree_top.png", "default_tree.png" },
 	groups = { wood = 6 },
 	is_ground_content = false,
 	sounds = default.node_sound.wood,
@@ -625,7 +625,7 @@ minetest.register_node(":default:tree", {
 
 minetest.register_node(":default:jungletree", {
 	description = S("Jungle Tree Trunk"),
-	tiles = { "jungletree_top.png", "jungletree_top.png", "jungletree.png" },
+	tiles = { "default_jungletree_top.png", "default_jungletree_top.png", "default_jungletree.png" },
 	groups = { wood = 6 },
 	is_ground_content = false,
 	sounds = default.node_sound.wood,
@@ -639,9 +639,9 @@ minetest.register_node(":default:junglegrass", {
 	-- also we're cutting off the bottom 9px (actually 8 and the last pixel is
 	-- rendered inside the below node, but we can't emulate this).
 	-- caveat: this ruins texture packs with different pixel sizes -> engine limitation
-	tiles = {"[combine:32x16:8,1=junglegrass.png"},
-	inventory_image = "junglegrass.png",
-	wield_image = "junglegrass.png",
+	tiles = {"[combine:32x16:8,1=default_junglegrass.png"},
+	inventory_image = "default_junglegrass.png",
+	wield_image = "default_junglegrass.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -651,8 +651,8 @@ minetest.register_node(":default:junglegrass", {
 
 minetest.register_node(":default:leaves", {
 	description = S("Leaves"),
-	tiles = { "leaves.png" },
-	special_tiles = { "leaves.png" },
+	tiles = { "default_leaves.png" },
+	special_tiles = { "default_leaves.png" },
 	groups = { wood = 2 },
 	drawtype = "allfaces_optional",
 	waving = default.modernize.node_waving and 1 or nil,
@@ -669,7 +669,7 @@ minetest.register_node(":default:leaves", {
 
 minetest.register_node(":default:cactus", {
 	description = S("Cactus"),
-	tiles = { "cactus_top.png", "cactus_top.png", "cactus_side.png" },
+	tiles = { "default_cactus_top.png", "default_cactus_top.png", "default_cactus_side.png" },
 	groups = { wood = 5 },
 	sounds = default.node_sound.wood,
 })
@@ -677,9 +677,9 @@ minetest.register_node(":default:cactus", {
 minetest.register_node(":default:papyrus", {
 	description = S("Papyrus"),
 	drawtype = "plantlike",
-	tiles = {"papyrus.png"},
-	inventory_image = "papyrus.png",
-	wield_image = "papyrus.png",
+	tiles = {"default_papyrus.png"},
+	inventory_image = "default_papyrus.png",
+	wield_image = "default_papyrus.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -689,7 +689,7 @@ minetest.register_node(":default:papyrus", {
 
 minetest.register_node(":default:bookshelf", {
 	description = S("Bookshelf"),
-	tiles = { "wood.png", "wood.png", "bookshelf.png" },
+	tiles = { "default_wood.png", "default_wood.png", "default_bookshelf.png" },
 	groups = { wood = 5 },
 	sounds = default.node_sound.wood,
 })
@@ -697,7 +697,7 @@ minetest.register_node(":default:bookshelf", {
 minetest.register_node(":default:glass", {
 	description = S("Glass"),
 	drawtype = default.modernize.glasslike and "glasslike" or "allfaces",
-	tiles = { "glass.png" },
+	tiles = { "default_glass.png" },
 	paramtype = "light",
 	sunlight_propagates = true,
 	groups = { wood = 2 },
@@ -707,7 +707,7 @@ minetest.register_node(":default:glass", {
 minetest.register_node(":default:fence_wood", {
 	description = S("Fence"),
 	drawtype = "fencelike",
-	tiles = { "wood.png" },
+	tiles = { "default_wood.png" },
 	inventory_image = "fence.png",
 	wield_image = "fence.png",
 	selection_box = { type = "regular" },
@@ -722,11 +722,11 @@ minetest.register_node(":default:rail", {
 	sunlight_propagates = true,
 	walkable = false,
 	tiles = {
-		"rail.png", "rail_curved.png",
-		"rail_t_junction.png", "rail_crossing.png"
+		"carts_rail_straight.png", "carts_rail_curved.png",
+		"carts_rail_t_junction.png", "carts_rail_crossing.png"
 	},
-	inventory_image = "rail.png",
-	wield_image = "rail.png",
+	inventory_image = "carts_rail_straight.png",
+	wield_image = "carts_rail_straight.png",
 	paramtype = "light",
 	selection_box = {
 		type = "fixed",
@@ -742,9 +742,9 @@ minetest.register_node(":default:ladder", {
 	sunlight_propagates = true,
 	walkable = false,
 	climbable = true,
-	tiles = { "ladder.png" },
-	inventory_image = "ladder.png",
-	wield_image = "ladder.png",
+	tiles = { "default_ladder_wood.png" },
+	inventory_image = "default_ladder_wood.png",
+	wield_image = "default_ladder_wood.png",
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
@@ -762,7 +762,7 @@ minetest.register_node(":default:ladder", {
 -- exists in 0.3 as legacy, but we need this as a separate node
 minetest.register_node(":default:coalstone", {
 	description = S("Stone with Coal"),
-	tiles = { "stone.png^mineral_coal.png" },
+	tiles = { "default_stone.png^default_mineral_coal.png" },
 	groups = { stone = 5 },
 	drop = "default:lump_of_coal 2",
 	sounds = default.node_sound.stone,
@@ -771,7 +771,7 @@ minetest.register_node(":default:coalstone", {
 -- does not exist as a separate node in 0.3, but we need it as one
 minetest.register_node(":default:ironstone", {
 	description = S("Stone with Iron"),
-	tiles = { "stone.png^mineral_iron.png" },
+	tiles = { "default_stone.png^default_mineral_iron.png" },
 	groups = { stone = 5 },
 	drop = "default:lump_of_iron 2",
 	sounds = default.node_sound.stone,
@@ -779,21 +779,21 @@ minetest.register_node(":default:ironstone", {
 
 minetest.register_node(":default:wood", {
 	description = S("Wood"),
-	tiles = { "wood.png" },
+	tiles = { "default_wood.png" },
 	groups = { wood = 5 },
 	sounds = default.node_sound.wood,
 })
 
 minetest.register_node(":default:mese", {
 	description = S("Mese"),
-	tiles = { "mese.png" },
+	tiles = { "default_mese_block.png" },
 	groups = { stone = 1 },
 	sounds = default.node_sound.stone,
 })
 
 minetest.register_node(":default:cloud", {
 	description = S("Cloud"),
-	tiles = { "cloud.png" },
+	tiles = { "default_cloud.png" },
 	groups = { dig_mese = 1, not_in_creative_inventory = 1 },
 	sounds = default.node_sound.default,
 })
@@ -802,10 +802,10 @@ minetest.register_node(":default:water_flowing", {
 	description = S("Water"),
 	drawtype = "flowingliquid",
 	waving = default.modernize.node_waving and 3 or nil,
-	tiles = { "water.png" },
+	tiles = { "default_water.png" },
 	special_tiles = {
-		{ name = "water.png", backface_culling = false },
-		{ name = "water.png", backface_culling = true },
+		{ name = "default_water.png", backface_culling = false },
+		{ name = "default_water.png", backface_culling = true },
 	},
 	use_texture_alpha = "blend",
 	paramtype = "light",
@@ -831,8 +831,8 @@ minetest.register_node(":default:water_source", {
 	drawtype = "liquid",
 	waving = default.modernize.node_waving and 3 or nil,
 	tiles = {
-		{ name = "water.png", backface_culling = false },
-		{ name = "water.png", backface_culling = true },
+		{ name = "default_water.png", backface_culling = false },
+		{ name = "default_water.png", backface_culling = true },
 	},
 	use_texture_alpha = "blend",
 	paramtype = "light",
@@ -858,10 +858,10 @@ minetest.register_node(":default:water_source", {
 minetest.register_node(":default:lava_flowing", {
 	description = S("Lava"),
 	drawtype = "flowingliquid",
-	tiles = { "lava.png" },
+	tiles = { "default_lava.png" },
 	special_tiles = {
-		{ name = "lava.png", backface_culling = false },
-		{ name = "lava.png", backface_culling = true },
+		{ name = "default_lava.png", backface_culling = false },
+		{ name = "default_lava.png", backface_culling = true },
 	},
 	use_texture_alpha = "clip",
 	paramtype = "light",
@@ -887,8 +887,8 @@ minetest.register_node(":default:lava_source", {
 	description = S("Lava Source"),
 	drawtype = "liquid",
 	tiles = {
-		{ name = "lava.png", backface_culling = false },
-		{ name = "lava.png", backface_culling = true },
+		{ name = "default_lava.png", backface_culling = false },
+		{ name = "default_lava.png", backface_culling = true },
 	},
 	use_texture_alpha = "clip",
 	paramtype = "light",
@@ -912,9 +912,9 @@ minetest.register_node(":default:lava_source", {
 minetest.register_node(":default:torch", {
 	description = S("Torch"),
 	drawtype = "torchlike",
-	tiles = { "torch_on_floor.png", "torch_on_ceiling.png", "torch.png" },
-	inventory_image = "torch_on_floor.png",
-	wield_image = "torch_on_floor.png",
+	tiles = { "default_torch_on_floor.png", "torch_on_ceiling.png", "torch.png" },
+	inventory_image = "default_torch_on_floor.png",
+	wield_image = "default_torch_on_floor.png",
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
@@ -934,9 +934,9 @@ minetest.register_node(":default:torch", {
 minetest.register_node(":default:sign_wall", {
 	description = S("Sign"),
 	drawtype = "signlike",
-	tiles = { "sign_wall.png" },
-	inventory_image = "sign_wall.png",
-	wield_image = "sign_wall.png",
+	tiles = { "default_sign_wall_wood.png" },
+	inventory_image = "default_sign_wall_wood.png",
+	wield_image = "default_sign_wall_wood.png",
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	legacy_wallmounted = true,
@@ -1002,7 +1002,7 @@ end
 
 minetest.register_node(":default:chest", {
 	description = S("Chest"),
-	tiles = { "chest_top.png", "chest_top.png", "chest_side.png", "chest_side.png", "chest_side.png", "chest_front.png" },
+	tiles = { "default_chest_top.png", "default_chest_top.png", "default_chest_side.png", "default_chest_side.png", "default_chest_side.png", "default_chest_front.png" },
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	groups = { wood = 6 },
@@ -1040,8 +1040,8 @@ end
 minetest.register_node(":default:chest_locked", {
 	description = S("Locking Chest"),
 	tiles = {
-		"chest_top.png", "chest_top.png", "chest_side.png", "chest_side.png", "chest_side.png",
-		default.modernize.fix_textures and "chest_lock.png" or "chest_lock_old.png"
+		"default_chest_top.png", "default_chest_top.png", "default_chest_side.png", "default_chest_side.png", "default_chest_side.png",
+		default.modernize.fix_textures and "default_chest_lock.png" or "chest_lock_old.png"
 	},
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
@@ -1084,7 +1084,7 @@ minetest.register_node(":default:chest_locked", {
 
 minetest.register_node(":default:furnace", {
 	description = S("Furnace"),
-	tiles = { "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png" },
+	tiles = { "default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png", "default_furnace_front.png" },
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	groups = { stone = 6 },
@@ -1095,21 +1095,21 @@ minetest.register_node(":default:furnace", {
 
 minetest.register_node(":default:cobble", {
 	description = S("Cobblestone"),
-	tiles = { "cobble.png" },
+	tiles = { "default_cobble.png" },
 	groups = { stone = 3 },
 	sounds = default.node_sound.stone,
 })
 
 minetest.register_node(":default:mossycobble", {
 	description = S("Mossy Cobblestone"),
-	tiles = { "mossycobble.png" },
+	tiles = { "default_mossycobble.png" },
 	groups = { stone = 2 },
 	sounds = default.node_sound.stone,
 })
 
 minetest.register_node(":default:steelblock", {
 	description = S("Steel Block"),
-	tiles = { "steel_block.png" },
+	tiles = { "default_steel_block.png" },
 	groups = { stone = 7 },
 	sounds = default.node_sound.stone,
 })
@@ -1136,9 +1136,9 @@ minetest.register_node(":default:sapling", {
 	description = S("Sapling"),
 	drawtype = "plantlike",
 	visual_scale = 1.6, -- TODO need on Y only
-	tiles = { "sapling.png" },
-	inventory_image = "sapling.png",
-	wield_image = "sapling.png",
+	tiles = { "default_sapling.png" },
+	inventory_image = "default_sapling.png",
+	wield_image = "default_sapling.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -1149,9 +1149,9 @@ minetest.register_node(":default:sapling", {
 minetest.register_node(":default:apple", {
 	description = S("Apple"),
 	drawtype = "plantlike",
-	tiles = { "apple.png" },
-	inventory_image = "apple.png",
-	wield_image = "apple.png",
+	tiles = { "default_apple.png" },
+	inventory_image = "default_apple.png",
+	wield_image = "default_apple.png",
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
@@ -1189,7 +1189,7 @@ minetest.override_item("", {
 
 minetest.register_tool(":default:pick_wood", {
 	description = S("Wooden Pickaxe"),
-	inventory_image = "tool_woodpick.png",
+	inventory_image = "default_tool_woodpick.png",
 	tool_capabilities = {
 		groupcaps = {
 			stone = { times = levels(default.stone_levels, 1.3), uses = 30 },
@@ -1200,7 +1200,7 @@ minetest.register_tool(":default:pick_wood", {
 
 minetest.register_tool(":default:pick_stone", {
 	description = S("Stone Pickaxe"),
-	inventory_image = "tool_stonepick.png",
+	inventory_image = "default_tool_stonepick.png",
 	tool_capabilities = {
 		groupcaps = {
 			stone = { times = levels(default.stone_levels, 0.75), uses = 100 },
@@ -1211,7 +1211,7 @@ minetest.register_tool(":default:pick_stone", {
 
 minetest.register_tool(":default:pick_steel", {
 	description = S("Steel Pickaxe"),
-	inventory_image = "tool_steelpick.png",
+	inventory_image = "default_tool_steelpick.png",
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		groupcaps = {
@@ -1225,7 +1225,7 @@ minetest.register_tool(":default:pick_steel", {
 
 minetest.register_tool(":default:pick_mese", {
 	description = S("Mese Pickaxe"),
-	inventory_image = "tool_mesepick.png",
+	inventory_image = "default_tool_mesepick.png",
 	tool_capabilities = {
 		groupcaps = {
 			-- digs everything instantly
@@ -1241,7 +1241,7 @@ minetest.register_tool(":default:pick_mese", {
 
 minetest.register_tool(":default:shovel_wood", {
 	description = S("Wooden Shovel"),
-	inventory_image = "tool_woodshovel.png",
+	inventory_image = "default_tool_woodshovel.png",
 	tool_capabilities = {
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0.4), uses = 50 },
@@ -1252,7 +1252,7 @@ minetest.register_tool(":default:shovel_wood", {
 
 minetest.register_tool(":default:shovel_stone", {
 	description = S("Stone Shovel"),
-	inventory_image = "tool_stoneshovel.png",
+	inventory_image = "default_tool_stoneshovel.png",
 	tool_capabilities = {
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0.2), uses = 150 },
@@ -1263,7 +1263,7 @@ minetest.register_tool(":default:shovel_stone", {
 
 minetest.register_tool(":default:shovel_steel", {
 	description = S("Steel Shovel"),
-	inventory_image = "tool_steelshovel.png",
+	inventory_image = "default_tool_steelshovel.png",
 	tool_capabilities = {
 		groupcaps = {
 			dirt = { times = levels(default.dirt_levels, 0.15), uses = 400 },
@@ -1274,7 +1274,7 @@ minetest.register_tool(":default:shovel_steel", {
 
 minetest.register_tool(":default:axe_wood", {
 	description = S("Wooden Axe"),
-	inventory_image = "tool_woodaxe.png",
+	inventory_image = "default_tool_woodaxe.png",
 	tool_capabilities = {
 		groupcaps = {
 			wood = { times = levels(default.wood_levels, 1.5), uses = 30 },
@@ -1285,7 +1285,7 @@ minetest.register_tool(":default:axe_wood", {
 
 minetest.register_tool(":default:axe_stone", {
 	description = S("Stone Axe"),
-	inventory_image = "tool_stoneaxe.png",
+	inventory_image = "default_tool_stoneaxe.png",
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		groupcaps = {
@@ -1299,7 +1299,7 @@ minetest.register_tool(":default:axe_stone", {
 
 minetest.register_tool(":default:axe_steel", {
 	description = S("Steel Axe"),
-	inventory_image = "tool_steelaxe.png",
+	inventory_image = "default_tool_steelaxe.png",
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		groupcaps = {
@@ -1313,7 +1313,7 @@ minetest.register_tool(":default:axe_steel", {
 
 minetest.register_tool(":default:sword_wood", {
 	description = S("Wooden Sword"),
-	inventory_image = "tool_woodsword.png",
+	inventory_image = "default_tool_woodsword.png",
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		damage_groups = { brittle = 10, fleshy = 4 },
@@ -1324,7 +1324,7 @@ minetest.register_tool(":default:sword_wood", {
 
 minetest.register_tool(":default:sword_stone", {
 	description = S("Stone Sword"),
-	inventory_image = "tool_stonesword.png",
+	inventory_image = "default_tool_stonesword.png",
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		damage_groups = { brittle = 12, fleshy = 6 },
@@ -1335,7 +1335,7 @@ minetest.register_tool(":default:sword_stone", {
 
 minetest.register_tool(":default:sword_steel", {
 	description = S("Steel Sword"),
-	inventory_image = "tool_steelsword.png",
+	inventory_image = "default_tool_steelsword.png",
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		damage_groups = { brittle = 16, fleshy = 8 },
@@ -1356,49 +1356,49 @@ end
 
 minetest.register_craftitem(":default:stick", {
 	description = S("Stick"),
-	inventory_image = "stick.png",
+	inventory_image = "default_stick.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:paper", {
 	description = S("Paper"),
-	inventory_image = "paper.png",
+	inventory_image = "default_paper.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:book", {
 	description = S("Book"),
-	inventory_image = "book.png",
+	inventory_image = "default_book.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:lump_of_coal", {
 	description = S("Lump of Coal"),
-	inventory_image = "lump_of_coal.png",
+	inventory_image = "default_coal_lump.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:lump_of_iron", {
 	description = S("Lump of Iron"),
-	inventory_image = "lump_of_iron.png",
+	inventory_image = "default_iron_lump.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:lump_of_clay", {
 	description = S("Lump of Clay"),
-	inventory_image = "lump_of_clay.png",
+	inventory_image = "default_clay_lump.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:steel_ingot", {
 	description = S("Steel Ingot"),
-	inventory_image = "steel_ingot.png",
+	inventory_image = "default_steel_ingot.png",
 	groups = { },
 })
 
 minetest.register_craftitem(":default:clay_brick", {
 	description = S("Clay Brick"),
-	inventory_image = "clay_brick.png",
+	inventory_image = "default_clay_brick.png",
 	groups = { },
 })
 
@@ -1423,7 +1423,7 @@ minetest.register_craftitem(":default:scorched_stuff", {
 
 minetest.register_craftitem(":default:firefly", {
 	description = S("Firefly"),
-	inventory_image = "firefly.png",
+	inventory_image = "fireflies_firefly.png",
 	groups = { },
 })
 
