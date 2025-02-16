@@ -629,13 +629,12 @@ minetest.register_node(":default:jungletree", {
 
 minetest.register_node(":default:junglegrass", {
 	description = S("Jungle Grass"),
-	drawtype = "plantlike",
-	visual_scale = 2,
-	-- we want the 2x scale to only apply on Y, so add appropriate empty space on X.
-	-- also we're cutting off the bottom 9px (actually 8 and the last pixel is
-	-- rendered inside the below node, but we can't emulate this).
-	-- caveat: this ruins texture packs with different pixel sizes -> engine limitation
-	tiles = {"[combine:32x16:8,1=junglegrass.png"},
+	drawtype = "mesh",
+	mesh = "plantlike1_3.obj", -- scaled 1.3x
+	use_texture_alpha = "clip",
+	tiles = {
+		{ name = "junglegrass.png", backface_culling = true }
+	},
 	inventory_image = "junglegrass.png",
 	wield_image = "junglegrass.png",
 	paramtype = "light",
@@ -674,6 +673,8 @@ minetest.register_node(":default:cactus", {
 minetest.register_node(":default:papyrus", {
 	description = S("Papyrus"),
 	drawtype = "plantlike",
+	-- Note: Minetest 0.3 actually rotates the faces of plantlike differently
+	-- by a single degree than the current engine. Nobody will ever notice this.
 	tiles = {"papyrus.png"},
 	inventory_image = "papyrus.png",
 	wield_image = "papyrus.png",
@@ -1138,9 +1139,12 @@ minetest.register_node(":default:nyancat_rainbow", {
 
 minetest.register_node(":default:sapling", {
 	description = S("Sapling"),
-	drawtype = "plantlike",
-	visual_scale = 1.6, -- TODO need on Y only
-	tiles = { "sapling.png" },
+	drawtype = "mesh",
+	mesh = "plantlike1.obj",
+	use_texture_alpha = "clip",
+	tiles = {
+		{ name = "sapling.png", backface_culling = true }
+	},
 	inventory_image = "sapling.png",
 	wield_image = "sapling.png",
 	paramtype = "light",
