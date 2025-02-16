@@ -157,14 +157,6 @@ end
 -- Misc code
 --
 
--- polyfill: vector.combine (5.6)
-if vector.combine == nil then
-	-- luacheck: ignore 122
-	vector.combine = function(a, b, func)
-		return vector.new(func(a.x, b.x), func(a.y, b.y), func(a.z, b.z))
-	end
-end
-
 -- returns drop_count, objref
 default.item_to_entity = function(pos, itemstack)
 	if itemstack:get_name() == "default:rat" then

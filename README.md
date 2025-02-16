@@ -20,7 +20,7 @@ To control some of the modern features check out "Modernize flags" in the settin
 For an experience faithful to 0.3 you should disable Fancy leaves and 3D Clouds on your client.
 
 This is a game for the [Minetest engine](https://www.minetest.net/), install
-at least version 5.5.0 to play it.
+at least version 5.6.0 to play it.
 
 **¹**: Fireflies do not spawn naturally and are only available in creative mode.
 
