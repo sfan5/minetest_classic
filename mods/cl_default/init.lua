@@ -32,8 +32,6 @@ default.get_translator = S
 -- http://packages.8dromeda.net/minetest/
 -- ^ ^ ^ ^ ^ ^ ^ ^ ^
 
--- TODO set is_ground_content sanely or exactly as in orginal?
-
 -- TODOs:
 -- come up with some sane item groups to use
 -- generate failed dungeons in water (like an U)
@@ -531,6 +529,9 @@ end
 -- Nodes
 --
 
+-- Note: is_ground_content is set like in 0.3 to ensure better matching mapgen
+-- behavior (e.g. caves should carve through dungeons).
+
 do
 	local groups = table.copy(minetest.registered_nodes["air"].groups)
 	groups.air_equivalent = 1
@@ -615,7 +616,6 @@ minetest.register_node(":default:tree", {
 	description = S("Tree Trunk"),
 	tiles = { "tree_top.png", "tree_top.png", "tree.png" },
 	groups = { wood = 6 },
-	is_ground_content = false,
 	sounds = default.node_sound.wood,
 })
 
@@ -642,6 +642,7 @@ minetest.register_node(":default:junglegrass", {
 	sunlight_propagates = true,
 	walkable = false,
 	groups = { wood = 1 },
+	is_ground_content = false,
 	sounds = default.node_sound.leaves,
 })
 
@@ -924,6 +925,7 @@ minetest.register_node(":default:torch", {
 		wall_side = {-0.5, -0.33, -0.16, -0.5+0.33, 0.33, 0.16},
 	},
 	groups = { dig_hand = 2, air_equivalent = 1 },
+	is_ground_content = false,
 	sounds = default.node_sound.default,
 })
 
@@ -945,6 +947,7 @@ minetest.register_node(":default:sign_wall", {
 		wall_side = {-0.49, -0.35, -0.4, -0.42, 0.35, 0.4},
 	},
 	groups = { dig_hand = 1, air_equivalent = 1 },
+	is_ground_content = false,
 	sounds = default.node_sound.default,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
@@ -1002,6 +1005,7 @@ minetest.register_node(":default:chest", {
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	groups = { wood = 6 },
+	is_ground_content = false,
 	sounds = default.node_sound.wood,
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
@@ -1042,6 +1046,7 @@ minetest.register_node(":default:chest_locked", {
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	groups = { wood = 6 },
+	is_ground_content = false,
 	sounds = default.node_sound.wood,
 	after_place_node = function(pos, player)
 		local meta = minetest.get_meta(pos)
@@ -1084,6 +1089,7 @@ minetest.register_node(":default:furnace", {
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	groups = { stone = 6 },
+	is_ground_content = false,
 	drop = "default:cobble 6",
 	sounds = default.node_sound.stone,
 	-- formspecs / nodetimer is located in furnace.lua
@@ -1118,6 +1124,7 @@ minetest.register_node(":default:nyancat", {
 	paramtype2 = "facedir",
 	legacy_facedir_simple = true,
 	groups = { stone = 6 },
+	is_ground_content = false,
 	sounds = default.node_sound.stone,
 })
 
@@ -1125,6 +1132,7 @@ minetest.register_node(":default:nyancat_rainbow", {
 	description = S("PB&J Pup Candies"),
 	tiles = { "nc_rb.png" },
 	groups = { stone = 6 },
+	is_ground_content = false,
 	sounds = default.node_sound.stone,
 })
 
@@ -1139,6 +1147,7 @@ minetest.register_node(":default:sapling", {
 	sunlight_propagates = true,
 	walkable = false,
 	groups = { dig_hand = 2, air_equivalent = 1 },
+	is_ground_content = false,
 	sounds = default.node_sound.default,
 })
 
@@ -1152,6 +1161,7 @@ minetest.register_node(":default:apple", {
 	sunlight_propagates = true,
 	walkable = false,
 	groups = { dig_hand = 2, air_equivalent = 1 },
+	is_ground_content = false,
 	on_use = minetest.item_eat(4),
 	sounds = default.node_sound.default,
 })
