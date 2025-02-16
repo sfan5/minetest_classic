@@ -213,7 +213,11 @@ minetest.register_on_joinplayer(function(player)
 	end
 	player:set_physics_override({sneak_glitch = true})
 	if player.set_lighting and default.modernize.allow_shadows then
-		player:set_lighting({shadows = { intensity = 0.33 }})
+		player:set_lighting({
+			shadows = { intensity = 0.33 },
+			bloom = { intensity = 0.05 },
+			volumetric_light = { strength = 0.2 },
+		})
 	end
 end)
 
