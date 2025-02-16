@@ -7,7 +7,7 @@ trap 'rm -rf "$world"' EXIT
 cp -v test/world.mt "$world/"
 chmod -R a+rwX "$world" # needed because server runs as unprivileged user inside container
 
-[ -z "$DOCKER_IMAGE" ] && DOCKER_IMAGE="ghcr.io/minetest/minetest:master"
+[ -z "$DOCKER_IMAGE" ] && DOCKER_IMAGE="ghcr.io/luanti-org/luanti:master"
 docker run --rm -i \
 	-v "$PWD/test/minetest.conf":/etc/minetest/minetest.conf \
 	--tmpfs /var/lib/minetest/.minetest \

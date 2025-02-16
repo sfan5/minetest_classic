@@ -7,14 +7,14 @@ globals = {
 }
 
 read_globals = {
-	"minetest",
+	"minetest", "core",
 	"dump",
 	"vector",
 	"VoxelManip", "VoxelArea",
 	"PseudoRandom", "PcgRandom",
 	"ItemStack",
 	"Settings",
-	-- Minetest specifics
+	-- Luanti-specific
 	math = { fields = { "round" } },
 	string = { fields = { "split" } },
 	table = { fields = { "shuffle", "copy", "indexof" } },
@@ -26,5 +26,5 @@ ignore = {
 }
 
 -- Overwrites fields in minetest
-files["mods/cl_default/init.lua"].globals = { "minetest" }
-files["mods/creative/init.lua"].globals = { "minetest" }
+files["mods/cl_default/init.lua"].globals = { "minetest", "core" }
+files["mods/creative/init.lua"].globals = { "minetest", "core" }

@@ -25,7 +25,7 @@ default.get_translator = S
 -- LBM https://github.com/minetest/minetest/blob/stable-0.3/src/environment.cpp#L622
 
 -- Node compatibility list that still exists in the engine today:
--- https://github.com/minetest/minetest/blob/stable-5/src/content_mapnode.cpp#L123
+-- https://github.com/luanti-org/luanti/blob/stable-5/src/content_mapnode.cpp#L123
 
 -- v v v v v v v v v
 -- Lots of old content (including playable releases) can be found here:
