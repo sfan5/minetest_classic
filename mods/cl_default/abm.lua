@@ -182,5 +182,8 @@ minetest.register_abm({
 		end
 
 		vm:write_to_map()
+		if vm.close ~= nil then -- (5.13.0)
+			vm:close()
+		end
 	end,
 })
