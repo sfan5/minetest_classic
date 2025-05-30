@@ -938,6 +938,9 @@ minetest.register_node(":default:sign_wall", {
 		end
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
+		if not fields.quit then
+			return
+		end
 		local player_name = sender:get_player_name()
 		if minetest.is_protected(pos, player_name) then
 			minetest.record_protection_violation(pos, player_name)
