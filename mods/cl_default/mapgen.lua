@@ -16,10 +16,16 @@ assert(minetest.MAP_BLOCKSIZE == 16) -- calculations would need to be redone
 
 local water_level = tonumber(minetest.get_mapgen_setting("water_level"))
 
-local chunksize = tonumber(minetest.get_mapgen_setting("chunksize"))
+local chunksize
+if core.get_mapgen_chunksize then
+	chunksize = core.get_mapgen_chunksize()
+else
+	local n = tonumber(core.get_mapgen_setting("chunksize"))
+	chunksize = vector.new(n, n, n)
+end
 -- whole number multiplier used for mapgen processes to account for size difference
--- (0.3 generates one MapBlock at once, later versions use 1 MapChunk = 5*5*5 MapBlocks)
-local chunksize_c = math.pow(chunksize, 3)
+-- (0.3 generates one MapBlock at once, Luanti can use a custom size)
+local chunkvolume = chunksize.x * chunksize.y * chunksize.z
 
 local FIVE_DIRS = {
 	vector.new(-1, 0,  0),
@@ -218,13 +224,13 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 	-- Mese
 	local c_mese = minetest.get_content_id("default:mese")
 	-- do this in slices to improve distribution accuracy
-	for ii = 0, chunksize - 1 do
+	for ii = 0, chunksize.y - 1 do
 		local sminp = vector.offset(minp, 0, ii * 16, 0)
 		local smaxp = vector.new(maxp.x, sminp.y + 15, maxp.z)
 		-- assume ground level is at zero which simplifies this a lot
 		local approx_ground_depth = -(sminp.y + smaxp.y) / 2
 		amount = approx_ground_depth / 4
-		amount = amount * (chunksize * chunksize)
+		amount = amount * (chunksize.x * chunksize.z)
 		for n = 1, amount do
 			if self.rand:next() % 50 == 0 then
 				x, y, z = rand_pos(self, sminp, smaxp)
@@ -236,7 +242,7 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 	-- Minerals
 	amount = self.rand:next(0, 15)
 	amount = 20 * (amount*amount*amount) / 1000
-	amount = amount * chunksize_c
+	amount = amount * chunkvolume
 	for n = 1, amount do
 		x, y, z = rand_pos(self, minp, maxp)
 		local mineral
@@ -253,7 +259,7 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 
 	-- More coal
 	local coal_amount = 30
-	for ii = 1, chunksize_c do
+	for ii = 1, chunkvolume do
 		if self.rand:next() % math.floor(60 / coal_amount) == 0 then
 			amount = self.rand:next(0, 15)
 			amount = coal_amount * (amount*amount*amount) / 1000
@@ -266,7 +272,7 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 
 	-- More iron
 	local iron_amount = 8
-	for ii = 1, chunksize_c do
+	for ii = 1, chunkvolume do
 		if self.rand:next() % math.floor(60 / iron_amount) == 0 then
 			amount = self.rand:next(0, 15)
 			amount = iron_amount * (amount*amount*amount) / 1000
@@ -298,11 +304,11 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 	-- Nyancats
 	local ncrandom = PseudoRandom(blockseed+9324342)
 	-- same slice method here so they don't inadvertently appear above ground
-	for ii = 0, chunksize - 1 do
+	for ii = 0, chunksize.y - 1 do
 		local sminp = vector.offset(minp, 0, ii * 16, 0)
 		local smaxp = vector.new(maxp.x, sminp.y + 15, maxp.z)
 		if sminp.y <= -3 then
-			for n = 1, (chunksize * chunksize) do
+			for n = 1, (chunksize.x * chunksize.z) do
 				if ncrandom:next(0, 1000) == 0 then
 					make_nc(self, ncrandom, sminp, smaxp)
 				end
@@ -320,8 +326,8 @@ default.on_generated = function(vmanip, minp, maxp, blockseed)
 	local c_water = minetest.get_content_id("default:water_source")
 	if minp.y <= water_level-2 and water_level+1 <= maxp.y then
 		local claynoise = minetest.get_perlin_map(np_clay,
-			{x=maxp.x - minp.x + 1, y=maxp.z - minp.z + 1}):get_2d_map_flat(
-			{x=minp.x, y=minp.z}, cached_buf4)
+			{x=maxp.x - minp.x + 1, y=maxp.z - minp.z + 1, z=0}):get_2d_map_flat(
+			{x=minp.x, y=minp.z, z=0}, cached_buf4)
 		local stride = maxp.x - minp.x + 1
 		--
 		local idx
