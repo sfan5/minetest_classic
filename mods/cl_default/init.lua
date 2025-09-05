@@ -955,7 +955,7 @@ minetest.register_node(":default:sign_wall", {
 			minetest.chat_send_player(player_name, S("Text too long"))
 			return
 		end
-		text = text:gsub("[%z-\8\11-\31\127]", "") -- strip naughty control characters (keeps \t and \n)
+		text = text:gsub("[%z\1-\8\11-\31\127]", "") -- strip naughty control characters (keeps \t and \n)
 		minetest.log("action", ("%s writes %q to sign at %s"):format(player_name, text, minetest.pos_to_string(pos)))
 		meta:set_string("text", text)
 		meta:set_string("infotext", S('"@1"', text))
