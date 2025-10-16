@@ -15,11 +15,6 @@ local function wait_map(callback)
 	check()
 end
 
-do
-	local v = minetest.get_version()
-	minetest.log("action", "Engine version: " .. (v.hash or v.string))
-end
-
 minetest.after(0, function()
 	wait_map(function(pos)
 		for x = -1, 1 do
@@ -36,7 +31,7 @@ minetest.after(0, function()
 
 		minetest.after(2.5, function()
 			minetest.log("action", "Exiting test run.")
-			minetest.request_shutdown()
+			minetest.request_shutdown("", false, 0)
 		end)
 	end)
 end)
