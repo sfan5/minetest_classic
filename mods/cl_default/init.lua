@@ -614,6 +614,7 @@ minetest.register_node(":default:junglegrass", {
 	sunlight_propagates = true,
 	walkable = false,
 	groups = { wood = 1 },
+	waving = default.modernize.node_waving and 1 or nil,
 	is_ground_content = false,
 	sounds = default.node_sound.leaves,
 })
@@ -624,7 +625,7 @@ minetest.register_node(":default:leaves", {
 	special_tiles = { "leaves.png" },
 	groups = { wood = 2 },
 	drawtype = "allfaces_optional",
-	waving = default.modernize.node_waving and 1 or nil,
+	waving = default.modernize.node_waving and 2 or nil,
 	paramtype = "light",
 	is_ground_content = false,
 	drop = {
