@@ -58,13 +58,13 @@ default.modernize = {
 	-- glass uses glasslike drawtype instead of allfaces
 	glasslike = true,
 	-- Breathbar/drowning is enabled
-	drowning = true,
+	drowning = false,
 	-- Lava is not renewable
 	lava_non_renewable = false,
 	-- Allows the engine shadowmapping to be used
 	allow_shadows = true,
 	-- Allows the minimap to be used
-	allow_minimap = false,
+	allow_minimap = true,
 	-- Allows the player to zoom
 	allow_zoom = false,
 	-- Keeps the (new) item entity from the engine instead of emulating the old one
