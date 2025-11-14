@@ -346,6 +346,11 @@ function Oerkki1SAO:on_step(dtime, moveresult)
 		if l > tolerance then
 			local damage = math.round((l - tolerance) * factor)
 			self.object:set_hp(self.object:get_hp() - damage)
+			if default.modernize.sounds then
+				minetest.sound_play("oerkki", {
+					pos = pos,
+				}, true)
+			end
 		end
 	end
 end
@@ -355,11 +360,17 @@ function Oerkki1SAO:on_punch(hitter, time_from_last_punch)
 		return true
 	end
 
+	local pos = self.object:get_pos()
 	if hitter then
-		local dir = vector.subtract(self.object:get_pos(), hitter:get_pos())
+		local dir = vector.subtract(pos, hitter:get_pos())
 		dir = vector.normalize(dir)
 		self.object:set_velocity(vector.add(self.object:get_velocity(),
 			vector.multiply(dir, 12)))
+	end
+	if default.modernize.sounds then
+		minetest.sound_play("oerkki", {
+			pos = pos,
+		}, true)
 	end
 end
 
@@ -530,6 +541,7 @@ default.get_mob_dungeon_master = function()
 		player_hit_damage = 1,
 		player_hit_distance = 1,
 		player_hit_interval = 0.5,
+		hit_sound = "dungeon_master",
 		mindless_rage = math.random(0, 100) == 0,
 	}
 end
@@ -917,6 +929,12 @@ function MobV2SAO:on_punch(hitter, time_from_last_punch)
 		if checkFreePosition(vector.add(pos_i, pos_size_off), size_blocks) then
 			self:setPos(new_pos)
 		end
+	end
+
+	if default.modernize.sounds and self.props.hit_sound then
+		minetest.sound_play(self.props.hit_sound, {
+			pos = self:getPos(),
+		}, true)
 	end
 end
 

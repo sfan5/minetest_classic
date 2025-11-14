@@ -75,6 +75,12 @@ sophiehall3535 (CC0):
 Worldmaxter (CC0):
   leaves.*.ogg <https://freesound.org/s/471133/>
 
+Osiruswaltz (CC0):
+  oerkki.*.ogg <https://freesound.org/s/362678/>
+
+Augdog (CC-BY 4.0):
+  dungeon_master.*.ogg <https://freesound.org/s/210170/>
+
 Vanessa Ezekowitz, Auke Kok, celeron55 (CC BY 4.0):
   "PB&J Pup" concept
   nc_back.png
