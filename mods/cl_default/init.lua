@@ -154,6 +154,8 @@ end
 -- Misc code
 --
 
+default.light_curve = {8, 11, 14, 18, 22, 29, 37, 47, 60, 76, 97, 123, 157, 200, 255, 255}
+
 -- returns drop_count, objref
 default.item_to_entity = function(pos, itemstack)
 	if itemstack:get_name() == "default:rat" then
@@ -209,12 +211,18 @@ minetest.register_on_joinplayer(function(player)
 		player:set_armor_groups({fleshy = 75})
 	end
 	player:set_physics_override({sneak_glitch = true})
-	if player.set_lighting and default.modernize.allow_shadows then
-		player:set_lighting({
-			shadows = { intensity = 0.33 },
-			bloom = { intensity = 0.05 },
-			volumetric_light = { strength = 0.2 },
-		})
+	if player.set_lighting then
+		local l = {}
+		if default.modernize.allow_shadows then
+			l.shadows = { intensity = 0.33 }
+			l.bloom = { intensity = 0.05 }
+			l.volumetric_light = { strength = 0.2 }
+		end
+		l.static = {
+			light_curve = default.light_curve,
+			-- TODO: what's the correct ao_gamma?
+		}
+		player:set_lighting(l)
 	end
 end)
 
@@ -260,7 +268,6 @@ end)
 -- Skybox
 --
 
-local light_decode_table = {8, 11, 14, 18, 22, 29, 37, 47, 60, 76, 97, 123, 157, 200, 255}
 local function time_to_daynight_ratio(tod)
 	local daylength, nightlength, daytimelength = 16, 6, 8
 	local t = (tod % 24000) / math.floor(24000 / daylength)
@@ -326,9 +333,9 @@ local last_brightness = -1
 minetest.register_globalstep(function()
 	local tod_f = minetest.get_timeofday()
 	local ratio = time_to_daynight_ratio(tod_f * 24000)
-	local index = math.floor(ratio * #light_decode_table / 1000)
-	index = math.min(index, #light_decode_table - 1)
-	local brightness = light_decode_table[index + 1] / 255
+	-- LIGHT_SUN = 15
+	local index = math.floor(ratio / 1000 * 15)
+	local brightness = default.light_curve[index + 1] / 255
 
 	if math.abs(last_brightness - brightness) < 0.03 then
 		return
